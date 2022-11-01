@@ -17,7 +17,9 @@ jobs:
       - name: is gh api working?
         run: |
           gh api --header 'Accept: application/vnd.github.v3+json' --method GET /repos/spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin/forks 
-      
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Concat main.csv
         run: |
           was_header_added=false
