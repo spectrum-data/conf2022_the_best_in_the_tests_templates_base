@@ -13,26 +13,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      
-      - name: is gh api working?
-        run: |
-          curl \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            https://api.github.com/repos/spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin/forks
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Concat main.csv
         run: |
           ./gradlew run
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN: "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"
           REPOS: "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin;Lokbugs/test_forking_private"
           LOCAL_FILE_NAME: "local.csv"
           CONCATED_FILE_NAME: "main.csv"
           
       - uses: EndBug/add-and-commit@v9
         with:
-          default_author: Lokbugs
           message: 'Build main.csv'
