@@ -23,7 +23,7 @@ jobs:
           do
             echo "current repo is: $repo"
 
-            forks_json=$(gh api --header 'Accept: application/vnd.github.v3+json' --method GET /repos/$repo/forks)
+            gh api --header 'Accept: application/vnd.github.v3+json' --method GET /repos/$repo/forks
 
              echo "current forks_json is: $forks_json"
 
