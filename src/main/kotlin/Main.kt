@@ -40,7 +40,7 @@ data class ConcaterContext(
 }
 
 fun main(args: Array<String>) {
-    val token = System.getenv().getOrDefault("GITHUB_TOKEN", "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")
+    val token = "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"
     val repos = System.getenv().getOrDefault("REPOS", "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin")
         .takeIf { it.isNotBlank() }?.split(";")?.map { it.trim() }
         ?: emptyList()
