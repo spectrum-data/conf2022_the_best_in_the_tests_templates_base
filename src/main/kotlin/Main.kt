@@ -50,6 +50,8 @@ fun main(args: Array<String>) {
     clearLocals(context)
 
     repos.forEach { repo ->
+        println("********CURRENT REPOSITORY: $repo")
+
         getForksInfo(repo, token).forEach { info ->
             downloadLocal(info, context)
         }
@@ -111,10 +113,14 @@ private fun getForksInfo(baseRepo: String, token: String): List<ForkInfo> {
         .header("Authorization", "Bearer $token")
         .build()
 
+    println("******GETTING FORKS REQUEST:${request.uri().toASCIIString()}")
+
     val response = HttpClient.newHttpClient()
         .send(
             request, HttpResponse.BodyHandlers.ofString()
         )
+
+    println("******GETTING FORKS RESPONSE:${response.body()}")
 
     return Json { ignoreUnknownKeys = true }.decodeFromString<List<ForkInfo>>(response.body())
 }
