@@ -21,7 +21,6 @@ jobs:
       
       - name: Concat main.csv
         run: |
-          gh auth login
           was_header_added=false
           declare -a repos=("spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin")
 
@@ -47,7 +46,7 @@ jobs:
               url="${url#\"}"
               url=$(echo $url | cut -c 9-)
 
-              git clone https://$token@$url -b 'main'
+              git clone https://$GH_TOKEN@$url -b 'main'
 
               if test -f "$PWD/$fork_repo_name/$LOCAL_FILE_NAME"; then
                 if ! $was_header_added ; then 
