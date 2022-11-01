@@ -25,57 +25,10 @@ jobs:
           
       - name: Concat main.csv
         run: |
-          was_header_added=false
-          declare -a repos=("Lokbugs/test_forking_private")
-
-          for repo in "${repos[@]}";
-          do
-            echo "current repo is: $repo"
-
-            forks_json=$(gh api --header 'Accept: application/vnd.github.v3+json' --method GET /repos/spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin/forks)
-
-             echo "current forks_json is: $forks_json"
-
-            for fork_json in $(echo "$forks_json" | jq -c '.[]'); 
-            do	
-              fork_url=$(echo $fork_json | jq '. | .html_url')
-
-              owner=$(echo $fork_json | jq '. | .owner.login')
-              owner="${owner%\"}"
-              owner="${owner#\"}"
-
-              fork_repo_name=$(echo $fork_json | jq '. | .name')
-              fork_repo_name="${fork_repo_name%\"}"
-              fork_repo_name="${fork_repo_name#\"}"
-
-              url="${fork_url%\"}"
-              url="${url#\"}"
-              url=$(echo $url | cut -c 9-)
-
-              git clone https://$GH_TOKEN@$url -b 'main'
-
-              if test -f "$PWD/$fork_repo_name/$LOCAL_FILE_NAME"; then
-                if ! $was_header_added ; then 
-                  cat "$PWD/$fork_repo_name/$LOCAL_FILE_NAME" > "$CONCATED_FILE_NAME"
-                  was_header_added=true
-                else
-                  tail -n +2 "$PWD/$fork_repo_name/$LOCAL_FILE_NAME" >> "$CONCATED_FILE_NAME"
-                fi
-
-
-                if test -d "$PWD/$owner/"; then
-                  rm -rf "$PWD/$owner/"
-                fi
-
-                mkdir $owner
-                cp "$PWD/$fork_repo_name/$LOCAL_FILE_NAME" "$PWD/$owner/$LOCAL_FILE_NAME"
-              fi
-
-              rm -rf $fork_repo_name
-            done
-          done
+          ./gradlew run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOS: "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin;Lokbugs/test_forking_private"
           LOCAL_FILE_NAME: "local.csv"
           CONCATED_FILE_NAME: "main.csv"
           
