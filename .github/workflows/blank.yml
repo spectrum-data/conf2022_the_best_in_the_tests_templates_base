@@ -14,10 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: gh auth
-        run:
-          gh auth login
-      
       - name: Concat main.csv
         run: |
           was_header_added=false
@@ -28,6 +24,8 @@ jobs:
             echo "current repo is: $repo"
 
             forks_json=$(gh api --header 'Accept: application/vnd.github.v3+json' --method GET /repos/$repo/forks)
+
+             echo "current forks_json is: $forks_json"
 
             for fork_json in $(echo "$forks_json" | jq -c '.[]'); 
             do	
