@@ -5,11 +5,6 @@ name: build_main
 on:
   workflow_dispatch:
 
-env:
-    GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-    LOCAL_FILE_NAME: "local.csv"
-    CONCATED_FILE_NAME: "main.csv"
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -19,8 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      
+      
       - name: Concat main.csv
         run: |
+          gh auth login
+        
           was_header_added=false
           declare -a repos=("spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin")
 
@@ -68,6 +67,10 @@ jobs:
               rm -rf $fork_repo_name
             done
           done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LOCAL_FILE_NAME: "local.csv"
+          CONCATED_FILE_NAME: "main.csv"
           
       - uses: EndBug/add-and-commit@v9
         with:
