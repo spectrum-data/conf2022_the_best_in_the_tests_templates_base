@@ -14,12 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      
+      - name: gh auth
+        run:
+          gh auth login
       
       - name: Concat main.csv
         run: |
-          gh auth login
-        
           was_header_added=false
           declare -a repos=("spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin")
 
