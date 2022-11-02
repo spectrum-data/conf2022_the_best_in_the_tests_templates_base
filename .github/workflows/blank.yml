@@ -4,8 +4,7 @@ name: build_main
 
 on:
   schedule:
-    - cron: '0/5 * * * *'
-  workflow_dispatch:
+    - cron: '*/5 * * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
