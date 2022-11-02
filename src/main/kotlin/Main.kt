@@ -73,10 +73,10 @@ private fun clearLocals(context: ConcaterContext) {
 private fun makeMain(context: ConcaterContext): File {
     return File(context.dirToSave.parent, "main.csv").also {
         it.createNewFile()
-
-        it.appendText("${context.mainHeader}\n")
-
+        
         it.writer().use { writer ->
+            writer.appendLine(context.mainHeader)
+
             context.dirToSave.listFiles().forEach { dirWithLocal ->
                 dirWithLocal.listFiles().forEach { localFile ->
                     localFile.useLines { lines -> lines.drop(1).forEach { line -> writer.appendLine(line) } }
