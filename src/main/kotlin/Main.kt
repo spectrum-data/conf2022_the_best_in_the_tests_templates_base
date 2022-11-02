@@ -37,6 +37,10 @@ data class ConcaterContext(
     val dirToSave by lazy {
         File(System.getProperty("user.dir"), "locals").also { it.mkdir() }
     }
+
+    val mainHeader by lazy {
+        System.getenv().getOrDefault("MAIN_HEADER", "")
+    }
 }
 
 fun main(args: Array<String>) {
@@ -69,6 +73,8 @@ private fun clearLocals(context: ConcaterContext) {
 private fun makeMain(context: ConcaterContext): File {
     return File(context.dirToSave.parent, "main.csv").also {
         it.createNewFile()
+
+        it.appendText("${context.mainHeader}\n")
 
         it.writer().use { writer ->
             context.dirToSave.listFiles().forEach { dirWithLocal ->

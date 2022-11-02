@@ -21,10 +21,11 @@ jobs:
           ./gradlew run
         env:
           TOKEN: "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"
-          REPOS: "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin;Lokbugs/test_forking_private"
+          REPOS: "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin;"
           LOCAL_FILE_NAME: "local.csv"
           CONCATED_FILE_NAME: "main.csv"
-          
+          MAIN_HEADER: "author|number|stringToProcessed|isDisabled|commentOnFailure"
+
       - uses: EndBug/add-and-commit@v9
         with:
           message: 'Build main.csv'
