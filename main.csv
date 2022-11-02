@@ -1,3 +1,4 @@
+author|number|stringToProcessed|isDisabled|commentOnFailure
 harisov|1|паспорт Харисов Д.И. 1009 123848==PASSPORT_RF:1009123848|false|Не удалось определить корректный паспорт РФ ФЛ
 harisov|2|Паспорт Харисов Д.И. 10090 123848=?!PASSPORT_RF:1009123848|false|Не удалось определить некорректный паспорт РФ ФЛ
 harisov|3|ВУ Харисов Д.И. 5008 189923==DRIVER_LICENSE:5008189923|false|Не удалось определить корректное ВУ
