@@ -5,6 +5,9 @@ import java.net.http.HttpResponse
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import java.io.File
+import java.io.OutputStream
+import java.io.OutputStreamWriter
+import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.createTempDirectory
 
@@ -31,15 +34,27 @@ data class ConcaterContext(
 
     ) {
     val localFileName by lazy {
-        System.getenv().getOrDefault("LOCAL_FILE_NANE", "local.csv")
+        System.getenv().getOrDefault("LOCAL_FILE_NAME", "local.csv")
+    }
+
+    val mainFileName by lazy {
+        System.getenv().getOrDefault("MAIN_FILE_NAME", "main.csv")
+    }
+
+    val projectDir by lazy {
+        File(System.getProperty("user.dir"))
     }
 
     val dirToSave by lazy {
-        File(System.getProperty("user.dir"), "locals").also { it.mkdir() }
+        File(projectDir, "locals").also { it.mkdir() }
     }
 
     val mainHeader by lazy {
         System.getenv().getOrDefault("MAIN_HEADER", "")
+    }
+
+    val delimiter by lazy {
+        System.getenv().getOrDefault("DELIMITER", "|")
     }
 }
 
@@ -71,11 +86,26 @@ private fun clearLocals(context: ConcaterContext) {
 }
 
 private fun makeMain(context: ConcaterContext): File {
-    return File(context.dirToSave.parent, "main.csv").also {
+    val existedMain = File(context.projectDir, context.mainFileName)
+
+    val testToTimeMap = existedMain.takeIf { it.exists() }
+        ?.let { mainFile -> mainFile.useLines { it.drop(1).toList() } }
+        ?.map { line -> line.split(context.delimiter) }
+        ?.associate { splitLine -> "${splitLine[0]}${splitLine[2]}".hashCode() to splitLine.getOrNull(5) }
+
+    fun OutputStreamWriter.addTimeAndAppendLine(line: String) {
+        val hash = line.split(context.delimiter).let { splitLine -> "${splitLine[0]}${splitLine[2]}".hashCode() }
+
+        val time = testToTimeMap?.getOrDefault(hash, null) ?: LocalTime.now().toString()
+
+        this.appendLine(listOf(line, context.delimiter, time).joinToString(""))
+    }
+
+    return File(context.projectDir, context.mainFileName).also {
         it.createNewFile()
-        
+
         it.writer().use { writer ->
-            writer.appendLine(context.mainHeader)
+            writer.write("${context.mainHeader}\n")
 
             context.dirToSave.listFiles().forEach { dirWithLocal ->
                 dirWithLocal.listFiles().forEach { localFile ->
@@ -98,7 +128,7 @@ private fun downloadLocal(info: ForkInfo, context: ConcaterContext): File? {
                 println(processStarted.inputStream.reader().use { it.readText() })
             }
 
-        processStarted.waitFor(5, TimeUnit.SECONDS)
+        processStarted.waitFor(3, TimeUnit.SECONDS)
 
         File(tempDir, "${context.localFileName}").also {
             if (it.exists()) {
