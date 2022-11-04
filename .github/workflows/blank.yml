@@ -4,8 +4,6 @@ name: build_main
 
 on:
   workflow_dispatch:
-#  schedule:
-#    - cron: '*/5 * * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -24,7 +22,8 @@ jobs:
           REPOS: "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin"
           LOCAL_FILE_NAME: "local.csv"
           CONCATED_FILE_NAME: "main.csv"
-          MAIN_HEADER: "author|number|stringToProcessed|isDisabled|commentOnFailure"
+          MAIN_HEADER: "author|number|stringToProcessed|isDisabled|commentOnFailure|publishTime"
+          DELIMITER: "|"
 
       - uses: EndBug/add-and-commit@v9
         with:
