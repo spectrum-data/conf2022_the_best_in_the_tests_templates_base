@@ -1,13 +1,15 @@
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import java.io.File
+import java.io.OutputStreamWriter
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
-import java.io.File
-import java.io.OutputStream
-import java.io.OutputStreamWriter
 import java.time.LocalTime
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.createTempDirectory
 
@@ -33,6 +35,9 @@ data class ConcaterContext(
     val token: String,
 
     ) {
+
+    val createdAt = LocalTime.now(ZoneId.of("Asia/Yekaterinburg"))
+
     val localFileName by lazy {
         System.getenv().getOrDefault("LOCAL_FILE_NAME", "local.csv")
     }
@@ -96,7 +101,8 @@ private fun makeMain(context: ConcaterContext): File {
     fun OutputStreamWriter.addTimeAndAppendLine(line: String) {
         val hash = line.split(context.delimiter).let { splitLine -> "${splitLine[0]}${splitLine[2]}".hashCode() }
 
-        val time = testToTimeMap?.getOrDefault(hash, null) ?: LocalTime.now().toString()
+        val time = testToTimeMap?.getOrDefault(hash, null)?.takeIf { it.isNotBlank() }
+            ?: context.createdAt.toString()
 
         this.appendLine(listOf(line, context.delimiter, time).joinToString(""))
     }
