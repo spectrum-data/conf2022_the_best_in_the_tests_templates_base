@@ -109,7 +109,7 @@ private fun makeMain(context: ConcaterContext): File {
 
             context.dirToSave.listFiles().forEach { dirWithLocal ->
                 dirWithLocal.listFiles().forEach { localFile ->
-                    localFile.useLines { lines -> lines.drop(1).forEach { line -> writer.appendLine(line) } }
+                    localFile.useLines { lines -> lines.drop(1).forEach { line -> writer.addTimeAndAppendLine(line) } }
                 }
             }
         }
