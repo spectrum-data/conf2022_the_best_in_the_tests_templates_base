@@ -13,70 +13,103 @@ import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.createTempDirectory
 
+/**
+ * Класс для описания форков репозиториев-шаблонов
+ * */
+@Serializable
+data class ForkInfo(
+    /**
+     * URL форк-репозитория
+     * */
+    @SerialName("html_url")
+    val url: String = "",
+
+    @SerialName("owner")
+    val owner: Owner? = null
+)
+
 @Serializable
 data class Owner(
     @SerialName("login")
     val login: String = ""
 )
 
-@Serializable
-data class ForkInfo(
-    @SerialName("html_url")
-    val url: String = "",
+/**
+ * Контекст объединения файлов с описаниями тестов
+ * */
+class ConcaterContext {
 
-    @SerialName("name")
-    val projectName: String = "",
+    /**
+     * Access_token для доступа к списку форков репозиториев
+     * */
+    val token by lazy {
+        System.getenv().getOrDefault("TOKEN", "")
+    }
 
-    @SerialName("owner")
-    val owner: Owner? = null
-)
+    /**
+     * Список репозиториев-шаблонов - форки данных репозиториев и будут обходиться
+     * */
+    val repos by lazy {
+        System.getenv().getOrDefault("REPOS", "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin")
+            .takeIf { it.isNotBlank() }?.split(";")?.map { it.trim() }
+            ?: emptyList()
+    }
 
-data class ConcaterContext(
-    val token: String,
-
-    ) {
-
+    /**
+     * Время запуска скрипта по объединению файлов с описанями тестов
+     * */
     val createdAt = LocalTime.now(ZoneId.of("Asia/Yekaterinburg"))
 
+    /**
+     * Название файла, содержащего локальные тесты (именно сбор этих файлов будет происходить)
+     * */
     val localFileName by lazy {
         System.getenv().getOrDefault("LOCAL_FILE_NAME", "local.csv")
     }
 
+    /**
+     * Название результирующего/общего файла
+     * */
     val mainFileName by lazy {
         System.getenv().getOrDefault("MAIN_FILE_NAME", "main.csv")
     }
 
+    /**
+     * Корневая директория проекта
+     * */
     val projectDir by lazy {
         File(System.getProperty("user.dir"))
     }
 
+    /**
+     * Директория для сохранения копии файлов с локальными тестами
+     * */
     val dirToSave by lazy {
         File(projectDir, "locals").also { it.mkdir() }
     }
 
+    /**
+     * Заголовок файла с описаниями тестов - будет добавлен при создании
+     * */
     val mainHeader by lazy {
         System.getenv().getOrDefault("MAIN_HEADER", "")
     }
 
+    /**
+     * Символ-разделитель, который используется в локальных файлах (будет также использован в общем)
+     * */
     val delimiter by lazy {
         System.getenv().getOrDefault("DELIMITER", "|")
     }
 }
 
 fun main(args: Array<String>) {
-    val token = System.getenv().getOrDefault("TOKEN", "")
-    val repos = System.getenv().getOrDefault("REPOS", "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin")
-        .takeIf { it.isNotBlank() }?.split(";")?.map { it.trim() }
-        ?: emptyList()
-
-    val context = ConcaterContext(token = token)
+    val context = ConcaterContext()
 
     clearLocals(context)
 
-    repos.forEach { repo ->
-        println("********CURRENT REPOSITORY: $repo")
-
-        getForksInfo(repo, token).forEach { info ->
+    context.repos.forEach { repo ->
+        getForksInfo(repo, context.token).forEach { info ->
             downloadLocal(info, context)
         }
     }
@@ -84,27 +117,45 @@ fun main(args: Array<String>) {
     makeMain(context)
 }
 
+/**
+ * Очищает папку с копиями локальных файлов
+ * */
 private fun clearLocals(context: ConcaterContext) {
     context.dirToSave.listFiles().forEach { localDir ->
         localDir.deleteRecursively()
     }
 }
 
+/**
+ * Собственно объединение скаченных локальных файлов в общий файл
+ * Также добавляет время создания записи о тесте
+ * */
 private fun makeMain(context: ConcaterContext): File {
     val existedMain = File(context.projectDir, context.mainFileName)
 
-    val testToTimeMap = existedMain.takeIf { it.exists() }
+    val testHashToTimeMap = existedMain.takeIf { it.exists() }
         ?.let { mainFile -> mainFile.useLines { it.drop(1).toList() } }
-        ?.map { line -> line.split(context.delimiter) }
+        ?.map { line -> line.split(context.delimiter).map { it.trim() } }
         ?.associate { splitLine -> "${splitLine[0]}${splitLine[2]}".hashCode() to splitLine.getOrNull(5) }
 
     fun OutputStreamWriter.addTimeAndAppendLine(line: String) {
-        val hash = line.split(context.delimiter).let { splitLine -> "${splitLine[0]}${splitLine[2]}".hashCode() }
+        val currentLineHash = line.split(context.delimiter).map { it.trim() }
+            .let { splitLine -> "${splitLine[0]}${splitLine[2]}".hashCode() }
 
-        val time = testToTimeMap?.getOrDefault(hash, null)?.takeIf { it.isNotBlank() }
+        val createdAt = testHashToTimeMap?.get(currentLineHash)?.takeIf { it.isNotBlank() }
             ?: context.createdAt.toString()
 
-        this.appendLine(listOf(line, context.delimiter, time).joinToString(""))
+        val lineWithAddedTime = buildList {
+            add(line)
+
+            if (!line.trim().endsWith(context.delimiter)) {
+                add(context.delimiter)
+            }
+
+            add(createdAt)
+        }.joinToString("")
+
+        appendLine(lineWithAddedTime)
     }
 
     return File(context.projectDir, context.mainFileName).also {
