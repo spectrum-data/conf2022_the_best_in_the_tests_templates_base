@@ -24,6 +24,7 @@ jobs:
           CONCATED_FILE_NAME: "main.csv"
           MAIN_HEADER: "author|number|stringToProcessed|isDisabled|commentOnFailure|publishTime"
           DELIMITER: "|"
+          MODE: "concat"
 
       - uses: EndBug/add-and-commit@v9
         with:
