@@ -22,7 +22,7 @@ data class ForkInfo(
     val url: String = "",
 
     @SerialName("owner")
-    val owner: Owner? = null
+    val owner: Owner = Owner()
 )
 
 @Serializable
@@ -45,8 +45,6 @@ fun getForksInfo(baseRepo: String, token: String): List<ForkInfo> {
         .header("Authorization", "Bearer $token")
         .build()
 
-    println("******GETTING FORKS REQUEST:${request.uri().toASCIIString()}")
-
     val response = HttpClient.newHttpClient()
         .send(
             request, HttpResponse.BodyHandlers.ofString()
@@ -60,10 +58,10 @@ fun getForksInfo(baseRepo: String, token: String): List<ForkInfo> {
 /**
  * Клонирует проект указанного форка во временную директорию
  * */
-fun gitCloneToTemp(info: ForkInfo, token: String): File {
+fun gitCloneToTemp(forkInfo: ForkInfo, token: String): File {
     val tempDir = createTempDirectory().toFile().also { it.mkdirs() }
 
-    val processStarted = ProcessBuilder("git", "clone", info.url.pasteToken(token), tempDir.absolutePath)
+    val processStarted = ProcessBuilder("git", "clone", forkInfo.url.pasteToken(token), tempDir.absolutePath)
         .redirectErrorStream(true)
         .start().also { processStarted ->
             println(processStarted.inputStream.reader().use { it.readText() })

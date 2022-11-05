@@ -4,6 +4,14 @@ import java.time.ZoneId
 
 abstract class BaseContext {
     /**
+     * Access_token для доступа к списку форков репозиториев
+     * */
+    val token by lazy {
+        System.getenv().getOrDefault("TOKEN", "")
+    }
+
+
+    /**
      * Название результирующего/общего файла
      * */
     val mainFileName by lazy {
@@ -32,13 +40,6 @@ class ConcatContext : BaseContext() {
      * */
     override val dirToSave by lazy {
         File(projectDir, "locals").also { it.mkdir() }
-    }
-
-    /**
-     * Access_token для доступа к списку форков репозиториев
-     * */
-    val token by lazy {
-        System.getenv().getOrDefault("TOKEN", "")
     }
 
     /**
@@ -77,7 +78,7 @@ class ConcatContext : BaseContext() {
     }
 }
 
-class CalculateContext : BaseContext() {
+class RunTestsContext : BaseContext() {
     /**
      *
      * */
@@ -89,6 +90,27 @@ class CalculateContext : BaseContext() {
      * Директория с файлами отчетов по выполненным тестам
      * */
     val reportsDir by lazy {
-        File(projectDir, "reports")
+        File(projectDir, "reports").also { it.mkdirs() }
+    }
+
+    /**
+     * Название файла отчета
+     * */
+    val reportFileName by lazy {
+        System.getenv().getOrDefault("REPORT_FILE_NAME", "report.md")
+    }
+
+    /**
+     * Название репозитория-шаблона на Kotlin
+     * */
+    val kotlinRepo by lazy {
+        System.getenv().getOrDefault("KOTLIN_REPO", "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin")
+    }
+
+    /**
+     * Название репозитория-шаблона на GO
+     * */
+    val goRepo by lazy {
+        System.getenv().getOrDefault("GO_REPO", "spectrum-data/conf2022_the_best_in_the_tests_templates_go")
     }
 }

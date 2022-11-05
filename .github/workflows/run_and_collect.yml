@@ -1,0 +1,29 @@
+name: run_tests_and_collect
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '>=1.18.0'
+
+      - name: Concat main.csv
+        run: |
+          ./gradlew run
+        env:
+          TOKEN: "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"
+          KOTLIN_REPO: "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin"
+          GO_REPO: "spectrum-data/conf2022_the_best_in_the_tests_templates_go"
+          REPORT_FILE_NAME: "report.md"
+          MAIN_FILE_NAME: "main.csv"
+          MODE: "run_and_collect"
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: 'run tests and collect reports'

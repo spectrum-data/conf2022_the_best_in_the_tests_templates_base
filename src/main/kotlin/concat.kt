@@ -10,8 +10,12 @@ fun concat() {
     clearLocals(context)
 
     context.repos.forEach { repo ->
-        getForksInfo(repo, context.token).forEach { info ->
-            downloadLocal(info, context)
+        getForksInfo(repo, context.token).forEach { fork ->
+            try {
+                downloadLocal(fork, context)
+            } catch (t: Throwable) {
+                println("!!!!! ERROR: fork - ${fork.url}. ${t.message}")
+            }
         }
     }
 
@@ -75,15 +79,13 @@ private fun makeMain(context: ConcatContext): File {
 }
 
 private fun downloadLocal(info: ForkInfo, context: ConcatContext): File? {
-    if (info.owner != null) {
-        val ownerDir = File(context.dirToSave, info.owner.login).also { it.mkdir() }
+    val ownerDir = File(context.dirToSave, info.owner.login).also { it.mkdir() }
 
-        val dirWithProject = gitCloneToTemp(info, context.token)
+    val dirWithProject = gitCloneToTemp(info, context.token)
 
-        File(dirWithProject, "${context.localFileName}").also {
-            if (it.exists()) {
-                it.copyTo(File(ownerDir, "${context.localFileName}"), true)
-            }
+    File(dirWithProject, "${context.localFileName}").also {
+        if (it.exists()) {
+            it.copyTo(File(ownerDir, "${context.localFileName}"), true)
         }
     }
 

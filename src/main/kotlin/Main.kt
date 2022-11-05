@@ -8,6 +8,7 @@ fun main(args: Array<String>) {
 
     when (mode.uppercase()) {
         "CONCAT" -> concat()
-        "CALCULATE" -> calculate()
+        "RUN_AND_COLLECT" -> runAndCollect()
+        "CALCULATE" -> runAndCollect()
     }
 }

@@ -1,3 +1,7 @@
+/**
+ * Подсчет результатов
+ * */
 fun calculate() {
-    val context = CalculateContext()
+    val context = RunTestsContext()
 }
+
