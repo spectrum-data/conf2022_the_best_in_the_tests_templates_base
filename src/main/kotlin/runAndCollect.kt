@@ -7,8 +7,8 @@ import java.util.concurrent.TimeUnit
 fun runAndCollect() {
     val context = RunTestsContext()
 
-    val kotlinForks = getForksInfo(baseRepo = context.kotlinRepo, token = context.token)
-    val goForks = emptyList<ForkInfo>()//getForksInfo(baseRepo = context.goRepo, token = context.token)
+    val kotlinForks = emptyList<ForkInfo>()//getForksInfo(baseRepo = context.kotlinRepo, token = context.token)
+    val goForks = getForksInfo(baseRepo = context.goRepo, token = context.token)
 
     kotlinForks.forEach { kotlinFork ->
         val projectDir = gitCloneToTemp(forkInfo = kotlinFork, token = context.token)
@@ -39,7 +39,14 @@ private fun runTestsKotlin(projectDir: File) {
 }
 
 private fun runTestsGo(projectDir: File) {
+    val processStarted = ProcessBuilder("go", "test", "Main_test.go")
+        .directory(projectDir)
+        .redirectErrorStream(true)
+        .start().also { processStarted ->
+            println(processStarted.inputStream.reader().use { it.readText() })
+        }
 
+    processStarted.waitFor(20, TimeUnit.SECONDS)
 }
 
 private fun collectReport(forkInfo: ForkInfo, projectDir: File, context: RunTestsContext) {

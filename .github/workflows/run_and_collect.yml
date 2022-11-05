@@ -13,7 +13,7 @@ jobs:
         with:
           go-version: '>=1.18.0'
 
-      - name: Concat main.csv
+      - name: Run tests and collect reports
         run: |
           ./gradlew run
         env:
