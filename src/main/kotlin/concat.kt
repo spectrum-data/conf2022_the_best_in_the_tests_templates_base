@@ -1,3 +1,4 @@
+import com.github.kotlintelegrambot.entities.ChatId
 import java.io.File
 import java.io.OutputStreamWriter
 
@@ -14,7 +15,7 @@ fun concat() {
             try {
                 downloadLocal(fork, context)
             } catch (t: Throwable) {
-                println("!!!!! ERROR: fork - ${fork.url}. ${t.message}")
+                context.sendToTelegramBot("При попытке скачивания локальных файлов с репозитория ${fork.url} произошла ошибка. ${t.message} ${t.stackTrace}")
             }
         }
     }

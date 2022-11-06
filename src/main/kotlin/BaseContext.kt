@@ -1,3 +1,6 @@
+import com.github.kotlintelegrambot.bot
+import com.github.kotlintelegrambot.entities.ChatId
+import models.TestDesc
 import java.io.File
 import java.time.LocalTime
 import java.time.ZoneId
@@ -10,6 +13,28 @@ abstract class BaseContext {
         System.getenv().getOrDefault("TOKEN", "")
     }
 
+    /**
+     * Токен для телеграм-бота
+     * */
+    val telegramToken by lazy {
+        System.getenv().getOrDefault("TELEGRAM_TOKEN", "")
+    }
+
+    /**
+     * Экземпляр телеграм-бота
+     * */
+    val telegramBot by lazy {
+        bot {
+            token = telegramToken
+        }
+    }
+
+    /**
+     * Идентификаторы чатов - куда отправлять сообщения об ошибке
+     * */
+    val telegramChatIds by lazy {
+        System.getenv().get("TELEGRAM_TOKEN")?.split(";")?.map { it.toLong() } ?: emptyList()
+    }
 
     /**
      * Название результирующего/общего файла
@@ -29,6 +54,29 @@ abstract class BaseContext {
      * Директория для сохранения
      * */
     abstract val dirToSave: File
+
+    /**
+     * Символ-разделитель, который используется в локальных файлах (будет также использован в общем)
+     * */
+    open val delimiter by lazy {
+        System.getenv().getOrDefault("DELIMITER", "|")
+    }
+
+    /**
+     * Отправка сообщения в телеграм бот
+     * */
+    fun sendToTelegramBot(message: String) {
+        try {
+            telegramChatIds.forEach { chatId ->
+                telegramBot.sendMessage(
+                    ChatId.fromId(chatId),
+                    message
+                )
+            }
+        } catch (t: Throwable) {
+            println("При попытке отправки сообщения в телеграм бот - возникла ошибка. Сообщение $message")
+        }
+    }
 }
 
 /**
@@ -69,16 +117,9 @@ class ConcatContext : BaseContext() {
     val mainHeader by lazy {
         System.getenv().getOrDefault("MAIN_HEADER", "")
     }
-
-    /**
-     * Символ-разделитель, который используется в локальных файлах (будет также использован в общем)
-     * */
-    val delimiter by lazy {
-        System.getenv().getOrDefault("DELIMITER", "|")
-    }
 }
 
-class RunTestsContext : BaseContext() {
+open class RunAndCalculateContext : BaseContext() {
     /**
      *
      * */
@@ -89,7 +130,7 @@ class RunTestsContext : BaseContext() {
     /**
      * Директория с файлами отчетов по выполненным тестам
      * */
-    val reportsDir by lazy {
+    open val reportsDir by lazy {
         File(projectDir, "reports").also { it.mkdirs() }
     }
 
@@ -113,4 +154,16 @@ class RunTestsContext : BaseContext() {
     val goRepo by lazy {
         System.getenv().getOrDefault("GO_REPO", "spectrum-data/conf2022_the_best_in_the_tests_templates_go")
     }
+
+    /**
+     * Время начала соревнований
+     * */
+    open val startAt: LocalTime by lazy {
+        System.getenv().getOrDefault("START_TIME", "").let { LocalTime.parse(it) }
+    }
+
+    /**
+     * Набор описаний тестов - полученный из общего файла main.csv
+     * */
+    var testDescs = listOf<TestDesc>()
 }
