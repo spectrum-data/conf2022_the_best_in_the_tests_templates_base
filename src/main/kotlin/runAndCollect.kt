@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit
  * Запуск тестов и сбор отчетов
  * */
 fun runAndCollect() {
-    val context = RunTestsContext()
+    val context = RunAndCalculateContext()
 
     val kotlinForks = emptyList<ForkInfo>()//getForksInfo(baseRepo = context.kotlinRepo, token = context.token)
     val goForks = getForksInfo(baseRepo = context.goRepo, token = context.token)
@@ -49,8 +49,8 @@ private fun runTestsGo(projectDir: File) {
     processStarted.waitFor(20, TimeUnit.SECONDS)
 }
 
-private fun collectReport(forkInfo: ForkInfo, projectDir: File, context: RunTestsContext) {
-    val ownerDir = File(context.dirToSave, forkInfo.owner.login).also { it.mkdir() }
+private fun collectReport(forkInfo: ForkInfo, projectDir: File, context: RunAndCalculateContext) {
+    val ownerDir = File(context.reportsDir, forkInfo.owner.login).also { it.mkdir() }
 
     File(projectDir, context.reportFileName).also {
         if (it.exists()) {
