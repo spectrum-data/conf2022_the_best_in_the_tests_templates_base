@@ -140,6 +140,18 @@ internal class TestDescParserTest : FunSpec() {
                     it.data.shouldContain(test1)
                 }
             }
+
+            test("задвоения запрещены"){
+                val content = listOf(
+                    TestDesc.csvHeader,
+                    test1.toCsvString(),
+                    test1.toCsvString()
+                ).joinToString("\n").also { println(it) }
+                TestDescParser.parse(content).also {
+                    it.isOk.shouldBeFalse()
+                    (it.error as TestDescParser.Error.DuplicateBizKeys).keys.shouldContain(test1.bizKey)
+                }
+            }
         }
     }
 }

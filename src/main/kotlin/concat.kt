@@ -1,15 +1,20 @@
 import com.github.kotlintelegrambot.entities.ChatId
+import models.TestDesc
+import models.TestDescParser
 import java.io.File
 import java.io.OutputStreamWriter
+import java.time.Instant
 
 /**
  * Запускает объединение файлов с описаниями тестов
  * */
 fun concat() {
     val context = ConcatContext()
-
     clearLocals(context)
-
+    val currentMainParseResult = TestDescParser.parse(File(context.projectDir, context.mainFileName))
+    if (!currentMainParseResult.isOk) {
+        context.sendToTelegramBot("Проблема при чтении локального main. ${currentMainParseResult.error}")
+    }
     context.repos.forEach { repo ->
         getForksInfo(repo, context.token).forEach { fork ->
             try {
@@ -19,8 +24,47 @@ fun concat() {
             }
         }
     }
+    val userTests = mutableListOf<TestDesc>()
+    val dirs = context.dirToSave.listFiles().filter { it.isDirectory }
+    for (forkDir in dirs) {
+        val author = forkDir.name
+        val file = File(forkDir, context.localFileName)
+        val time = context.createdAt
+        val testParseResult = TestDescParser.parse(file, TestDescParser.Options(author, time))
+        if (testParseResult.isOk) {
+            userTests.addAll(testParseResult.data)
+        } else {
+            context.sendToTelegramBot("При парсинге тестов ${author} произошла ошибка. ${testParseResult.error}")
+        }
+    }
 
-    makeMain(context)
+    val currentMainMap = currentMainParseResult.data.associateBy { it.bizKey }.toMutableMap()
+    val currentUserMap = userTests.associateBy { it.bizKey }.toMutableMap()
+    val resolvedTests = mutableListOf<TestDesc>()
+    // обрабатываем имеющиеся тесты
+    currentMainMap.entries.forEach { existedEntry ->
+        val existed = existedEntry.value
+        // чтобы в карте пользовательских остались только новые
+        val userLocal = currentUserMap.get(existed.bizKey)
+        currentMainMap.remove(existed.bizKey)
+        resolvedTests.add(existed.merge(userLocal))
+    }
+    // все тут остались только новые, добавляем как есть
+    resolvedTests.addAll(currentUserMap.values)
+    writeNewMainFile(context, resolvedTests)
+
+    context.sendToTelegramBot("Обновленный файл с меткой времени ${context.createdAt} успешно сохранен!")
+}
+
+fun writeNewMainFile(context: ConcatContext, tests: List<TestDesc>) {
+    val file = File(context.projectDir, context.mainFileName)
+    file.writer().use {w ->
+        w.appendLine(TestDesc.csvHeader)
+        tests.sortedWith(compareBy<TestDesc> {it.author}.thenBy{it.publishTime}).forEach {t ->
+            w.appendLine(t.toCsvString())
+        }
+    }
+
 }
 
 /**
@@ -29,53 +73,6 @@ fun concat() {
 private fun clearLocals(context: ConcatContext) {
     context.dirToSave.listFiles().forEach { localDir ->
         localDir.deleteRecursively()
-    }
-}
-
-/**
- * Собственно объединение скаченных локальных файлов в общий файл
- * Также добавляет время создания записи о тесте
- * */
-private fun makeMain(context: ConcatContext): File {
-    val existedMain = File(context.projectDir, context.mainFileName)
-
-    val testHashToTimeMap = existedMain.takeIf { it.exists() }
-        ?.let { mainFile -> mainFile.useLines { it.drop(1).toList() } }
-        ?.map { line -> line.split(context.delimiter).map { it.trim() } }
-        ?.associate { splitLine -> "${splitLine[0]}${splitLine[2]}".hashCode() to splitLine.getOrNull(5) }
-
-    fun OutputStreamWriter.addTimeAndAppendLine(line: String) {
-        val currentLineHash = line.split(context.delimiter).map { it.trim() }
-            .let { splitLine -> "${splitLine[0]}${splitLine[2]}".hashCode() }
-
-        val createdAt = testHashToTimeMap?.get(currentLineHash)?.takeIf { it.isNotBlank() }
-            ?: context.createdAt.toString()
-
-        val lineWithAddedTime = buildList {
-            add(line)
-
-            if (!line.trim().endsWith(context.delimiter)) {
-                add(context.delimiter)
-            }
-
-            add(createdAt)
-        }.joinToString("")
-
-        appendLine(lineWithAddedTime)
-    }
-
-    return File(context.projectDir, context.mainFileName).also {
-        it.createNewFile()
-
-        it.writer().use { writer ->
-            writer.write("${context.mainHeader}\n")
-
-            context.dirToSave.listFiles().forEach { dirWithLocal ->
-                dirWithLocal.listFiles().forEach { localFile ->
-                    localFile.useLines { lines -> lines.drop(1).forEach { line -> writer.addTimeAndAppendLine(line) } }
-                }
-            }
-        }
     }
 }
 

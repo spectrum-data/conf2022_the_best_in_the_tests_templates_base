@@ -61,6 +61,22 @@ data class TestDesc (
         }
     }
 
+    /**
+     * Сведение существующей записи с новой
+     */
+    fun merge(userLocal: TestDesc?): TestDesc {
+        if(userLocal == null) {
+            if(isDisabled) {
+                return this
+            }
+            return this.copy(isDisabled = true)
+        }
+        if(this.commentOnFailure != userLocal.commentOnFailure) {
+            return this.copy(commentOnFailure = userLocal.commentOnFailure)
+        }
+        return this
+    }
+
     companion object {
         val None = TestDesc()
         const val DELIMITER = "|"

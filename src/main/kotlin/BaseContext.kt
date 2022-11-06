@@ -103,7 +103,7 @@ class ConcatContext : BaseContext() {
     /**
      * Время запуска скрипта по объединению файлов с описанями тестов
      * */
-    val createdAt = LocalTime.now(ZoneId.of("Asia/Yekaterinburg"))
+    val createdAt = Instant.now()
 
     /**
      * Название файла, содержащего локальные тесты (именно сбор этих файлов будет происходить)

@@ -76,6 +76,11 @@ object TestDescParser {
          * Ошибка неправильный опций
          */
         object NoAuthorInfoForLocal : Error("Не укзано имя автора при парсинге из локального файла")
+
+        /**
+         * Все тесты должны быть уникальны
+         */
+        class DuplicateBizKeys(val keys: List<String>) : Error("Обнаружены тесты дубли: [${keys.joinToString()}]")
     }
 
     /**
@@ -244,6 +249,12 @@ object TestDescParser {
                 }
                 data.add(t)
             }
+        }
+
+        val grouppedByBizKey = data.groupBy { it.bizKey }
+        val doubles = grouppedByBizKey.filter { it.value.size > 1 }
+        if(doubles.any()) {
+            error = Error.DuplicateBizKeys(doubles.keys.toList())
         }
         return Result(data, error)
     }
