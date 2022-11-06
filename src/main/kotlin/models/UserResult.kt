@@ -38,6 +38,13 @@ data class UserResult(
     val firedShots: MutableList<TestShot> = mutableListOf()
 
     /**
+     * Кол-во заработанных очков
+     * */
+    val score by lazy {
+        firedShots.filter { it.isSuccessful }.sumOf { it.getScore() }
+    }
+
+    /**
      * Заполнить информацию о полученных/выпущенных тестов-снарядов
      * */
     fun fillShotInfo(context: RunAndCalculateContext, otherUser: UserResult) {
