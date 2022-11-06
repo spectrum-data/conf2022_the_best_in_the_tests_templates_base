@@ -1,3 +1,5 @@
+import com.github.kotlintelegrambot.bot
+import com.github.kotlintelegrambot.entities.ChatId
 import models.TestDesc
 import java.io.File
 import java.time.LocalTime
@@ -11,6 +13,28 @@ abstract class BaseContext {
         System.getenv().getOrDefault("TOKEN", "")
     }
 
+    /**
+     * Токен для телеграм-бота
+     * */
+    val telegramToken by lazy {
+        System.getenv().getOrDefault("TELEGRAM_TOKEN", "")
+    }
+
+    /**
+     * Экземпляр телеграм-бота
+     * */
+    val telegramBot by lazy {
+        bot {
+            token = telegramToken
+        }
+    }
+
+    /**
+     * Идентификаторы чатов - куда отправлять сообщения об ошибке
+     * */
+    val telegramChatIds by lazy {
+        System.getenv().get("TELEGRAM_TOKEN")?.split(";")?.map { it.toLong() } ?: emptyList()
+    }
 
     /**
      * Название результирующего/общего файла
@@ -36,6 +60,22 @@ abstract class BaseContext {
      * */
     open val delimiter by lazy {
         System.getenv().getOrDefault("DELIMITER", "|")
+    }
+
+    /**
+     * Отправка сообщения в телеграм бот
+     * */
+    fun sendToTelegramBot(message: String) {
+        try {
+            telegramChatIds.forEach { chatId ->
+                telegramBot.sendMessage(
+                    ChatId.fromId(chatId),
+                    message
+                )
+            }
+        } catch (t: Throwable) {
+            println("При попытке отправки сообщения в телеграм бот - возникла ошибка. Сообщение $message")
+        }
     }
 }
 
