@@ -3,6 +3,8 @@ import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
+import models.TestDesc
+import models.TestDescParser
 import java.time.Instant
 
 internal class TestDescParserTest : FunSpec() {
@@ -82,7 +84,7 @@ internal class TestDescParserTest : FunSpec() {
                     "2222222222 -> ==PASSPORT_RF:2222222222",
                     "3333333333 -> ~=PASSPORT_RF:3333333333",
                 ).joinToString("\n").also { println(it) }
-                TestDescParser.parse(content, options =TestDescParser.Options(author = "x")).also {
+                TestDescParser.parse(content, options = TestDescParser.Options(author = "x")).also {
                     it.error.shouldBe(TestDescParser.Error.NoError)
                     it.data[0].expected shouldBe "==PASSPORT_RF:1111111111"
                     it.data[1].expected shouldBe "==PASSPORT_RF:2222222222"

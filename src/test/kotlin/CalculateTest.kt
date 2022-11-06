@@ -1,6 +1,8 @@
 import io.kotest.core.spec.style.FunSpec
-import models.TestDesc
+import io.kotest.matchers.booleans.shouldBeTrue
+import models.TestDescParser
 import java.io.File
+import java.time.Instant
 import java.time.LocalTime
 
 class CalculateTest : FunSpec() {
@@ -8,20 +10,22 @@ class CalculateTest : FunSpec() {
         context("парсинг") {
             test("парсит корректные файлы") {
                 val context = object : RunAndCalculateContext() {
-                    override val startAt: LocalTime = LocalTime.parse("00:00:00")
+                    override val startAt: Instant = Instant.parse("2022-01-01T00:00:00.000Z")
 
                     override val reportsDir: File
                         get() = File(projectDir, "src/test/resources/reports")
 
                     override val delimiter: String = "|"
                 }
-                context.testDescs = File(context.projectDir, "src/test/resources/main.csv").useLines { seq ->
-                    seq.drop(1).map { TestDesc.parse(it, context) }.toList()
-                }
 
-                val parseResult = collectUserResults(context)
+                val file = File(context.projectDir, "src/test/resources/main.csv")
+                val parseMainResult = TestDescParser.parse(file)
+                parseMainResult.isOk.shouldBeTrue()
 
-                println(parseResult)
+
+                val parseUserResult = collectUserResults(context)
+
+                println(parseUserResult)
             }
         }
     }

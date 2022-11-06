@@ -5,16 +5,18 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
-import java.time.LocalTime
+import java.time.Instant
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 class UserResultTest : FunSpec() {
-    val _startAt = LocalTime.parse("00:00:00")
+    val _startAt = Instant.parse("2022-01-01T01:01:01.000Z")
     val context = object : RunAndCalculateContext() {
-        override val startAt: LocalTime = _startAt
+        override val startAt: Instant = _startAt
     }
 
-    fun getTestRunResult(author: String, isTestPass: Boolean, publishTime: LocalTime): TestRunResult {
+    fun getTestRunResult(author: String, isTestPass: Boolean, publishTime: Instant): TestRunResult {
         val input = Random.nextInt().toString()
         val expected = Random.nextInt().toString()
 
@@ -28,7 +30,7 @@ class UserResultTest : FunSpec() {
                 input = input,
                 expected = expected,
                 isDisabled = false,
-                comment = "someComment",
+                commentOnFailure = "someComment",
                 publishTime = publishTime
             )
         )
@@ -44,7 +46,7 @@ class UserResultTest : FunSpec() {
                     login = firstUserLogin,
                     isPassBase = false,
                     ownTests = listOf(
-                        getTestRunResult(firstUserLogin, true, _startAt.plusMinutes(15)),
+                        getTestRunResult(firstUserLogin, true, _startAt.plus(15.minutes.toJavaDuration())),
                     ),
                     competitorsTests = listOf()
                 )
@@ -70,7 +72,7 @@ class UserResultTest : FunSpec() {
                     login = firstUserLogin,
                     isPassBase = false,
                     ownTests = listOf(
-                        getTestRunResult(firstUserLogin, true, _startAt.plusMinutes(15)),
+                        getTestRunResult(firstUserLogin, true, _startAt.plus(15.minutes.toJavaDuration())),
                     ),
                     competitorsTests = listOf()
                 )
@@ -96,7 +98,7 @@ class UserResultTest : FunSpec() {
                     login = firstUserLogin,
                     isPassBase = false,
                     ownTests = listOf(
-                        getTestRunResult(firstUserLogin, false, _startAt.plusMinutes(15)),
+                        getTestRunResult(firstUserLogin, false, _startAt.plus(15.minutes.toJavaDuration())),
                     ),
                     competitorsTests = listOf()
                 )
@@ -124,7 +126,7 @@ class UserResultTest : FunSpec() {
                     login = secondUserLogin,
                     isPassBase = false,
                     ownTests = listOf(
-                        getTestRunResult(secondUserLogin, true, _startAt.plusMinutes(20)),
+                        getTestRunResult(secondUserLogin, true, _startAt.plus(20.minutes.toJavaDuration())),
                     ),
                     competitorsTests = listOf(
                     )
@@ -152,7 +154,7 @@ class UserResultTest : FunSpec() {
                     login = secondUserLogin,
                     isPassBase = false,
                     ownTests = listOf(
-                        getTestRunResult(secondUserLogin, true, _startAt.plusMinutes(20)),
+                        getTestRunResult(secondUserLogin, true, _startAt.plus(20.minutes.toJavaDuration())),
                     ),
                     competitorsTests = listOf(
                     )
@@ -180,7 +182,7 @@ class UserResultTest : FunSpec() {
                     login = secondUserLogin,
                     isPassBase = false,
                     ownTests = listOf(
-                        getTestRunResult(firstUserLogin, false, _startAt.plusMinutes(20)),
+                        getTestRunResult(firstUserLogin, false, _startAt.plus(20.minutes.toJavaDuration())),
                     ),
                     competitorsTests = listOf(
                     )

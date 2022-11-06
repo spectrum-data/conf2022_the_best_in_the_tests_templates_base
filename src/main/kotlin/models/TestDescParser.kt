@@ -1,3 +1,6 @@
+package models
+
+import ExpectedResult
 import java.io.File
 import java.io.Reader
 import java.time.Instant
@@ -195,11 +198,11 @@ object TestDescParser {
                     it != UNDEFINED && line.contains(it.regex)
                 } ?: UNDEFINED
                 val error = when {
-                    format == Format.UNDEFINED -> {
+                    format == UNDEFINED -> {
                         Error.CannotDetektFormat
                     }
 
-                    format == Format.LOCAL && options.author.isBlank() -> Error.NoAuthorInfoForLocal
+                    format == LOCAL && options.author.isBlank() -> Error.NoAuthorInfoForLocal
                     else -> Error.NoError
                 }
                 return format to error

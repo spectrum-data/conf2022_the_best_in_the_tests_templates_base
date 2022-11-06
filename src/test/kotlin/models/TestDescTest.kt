@@ -1,9 +1,6 @@
 package models
 
-import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
-import models.TestDesc.Companion.toTestDesc
 
 class TestDescTest : FunSpec() {
     init {

@@ -2,6 +2,7 @@ import com.github.kotlintelegrambot.bot
 import com.github.kotlintelegrambot.entities.ChatId
 import models.TestDesc
 import java.io.File
+import java.time.Instant
 import java.time.LocalTime
 import java.time.ZoneId
 
@@ -158,8 +159,8 @@ open class RunAndCalculateContext : BaseContext() {
     /**
      * Время начала соревнований
      * */
-    open val startAt: LocalTime by lazy {
-        System.getenv().getOrDefault("START_TIME", "").let { LocalTime.parse(it) }
+    open val startAt: Instant by lazy {
+        System.getenv().getOrDefault("START_TIME", "").let { Instant.parse(it) }
     }
 
     /**
