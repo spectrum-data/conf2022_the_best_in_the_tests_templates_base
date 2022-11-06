@@ -1,2 +1,4 @@
 /MainConcater/build/
 /MainConcater/.idea/
+build/
+.gradle/
