@@ -97,6 +97,13 @@ object TestDescParser {
         val error: Error = Error.NoError,
     ) {
         val isOk: Boolean = error == Error.NoError
+
+        fun unwrap() : List<TestDesc> {
+            if(!isOk) {
+                error(error.toString())
+            }
+            return data
+        }
     }
 
     /**
@@ -111,7 +118,7 @@ object TestDescParser {
         /**
          * Может быть опущено `==` потом если нет ни одного оператора, он будет дописан
          */
-        LOCAL("""^([\s\S]+?[^~=?]+)->(==|~=|=\?|~\?)?([^~=?]+[\s\S]+?)$""".toRegex()) {
+        LOCAL("""^([\s\S]*?[^~=?]+)->(==|~=|=\?|~\?)?([^~=?]+[\s\S]*?)$""".toRegex()) {
             override fun parseLineOrError(lineNumber: Int, line: String, options: Options): Pair<TestDesc, Error> {
                 val beforeCommentAndComment = line.split("#")
                 if (beforeCommentAndComment.size > 2) {
@@ -193,7 +200,7 @@ object TestDescParser {
             /**
              * Регекс условия в полном файле, нет никаких послаблений на структуру
              */
-            val FULL_EXPECTATION_REGEX = "^(==|~=|=\\?|~\\?)([^~=?]+[\\s\\S]+?)\\S$".toRegex()
+            val FULL_EXPECTATION_REGEX = "^(==|~=|=\\?|~\\?)([^~=?]+[\\s\\S]*?)$".toRegex()
 
             /**
              * Определяет формат

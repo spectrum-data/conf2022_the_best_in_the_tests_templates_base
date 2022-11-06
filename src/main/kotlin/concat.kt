@@ -25,7 +25,7 @@ fun concat(context: ConcatContext = ConcatContext()) {
         return // дальше нельзя собирать
     }
     val userTests = mutableListOf<TestDesc>()
-    val dirs = context.dirToSave.listFiles().filter { it.isDirectory }
+    val dirs = context.dirToSave.listFiles()?.filter { it.isDirectory } ?: emptyList()
     for (forkDir in dirs) {
         val author = forkDir.name
         val file = File(forkDir, context.localFileName)
@@ -46,7 +46,7 @@ fun concat(context: ConcatContext = ConcatContext()) {
         val existed = existedEntry.value
         // чтобы в карте пользовательских остались только новые
         val userLocal = currentUserMap.get(existed.bizKey)
-        currentMainMap.remove(existed.bizKey)
+        currentUserMap.remove(existed.bizKey)
         resolvedTests.add(existed.merge(userLocal))
     }
     // все тут остались только новые, добавляем как есть
@@ -57,7 +57,7 @@ fun concat(context: ConcatContext = ConcatContext()) {
 }
 
 fun writeNewMainFile(context: ConcatContext, tests: List<TestDesc>) {
-    val file = File(context.projectDir, context.mainFileName)
+    val file = context.currentMainFile
     file.writer().use { w ->
         w.appendLine(TestDesc.csvHeader)
         tests.sortedWith(compareBy<TestDesc> { it.author }.thenBy { it.publishTime }).forEach { t ->
@@ -71,7 +71,7 @@ fun writeNewMainFile(context: ConcatContext, tests: List<TestDesc>) {
  * Очищает папку с копиями локальных файлов
  * */
 private fun clearLocals(context: ConcatContext) {
-    context.dirToSave.listFiles().forEach { localDir ->
+    context.dirToSave.listFiles()?.forEach { localDir ->
         localDir.deleteRecursively()
     }
 }
@@ -81,9 +81,9 @@ private fun downloadLocal(info: ForkInfo, context: ConcatContext): File? {
 
     val dirWithProject = gitCloneToTemp(info, context.token)
 
-    File(dirWithProject, "${context.localFileName}").also {
+    File(dirWithProject, context.localFileName).also {
         if (it.exists()) {
-            it.copyTo(File(ownerDir, "${context.localFileName}"), true)
+            it.copyTo(File(ownerDir, context.localFileName), true)
         }
     }
 

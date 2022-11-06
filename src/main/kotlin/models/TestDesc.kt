@@ -71,8 +71,11 @@ data class TestDesc (
             }
             return this.copy(isDisabled = true)
         }
-        if(this.commentOnFailure != userLocal.commentOnFailure) {
-            return this.copy(commentOnFailure = userLocal.commentOnFailure)
+        if (this.commentOnFailure != userLocal.commentOnFailure || this.isDisabled != userLocal.isDisabled) {
+            return this.copy(
+                commentOnFailure = userLocal.commentOnFailure,
+                isDisabled = userLocal.isDisabled,
+            )
         }
         return this
     }

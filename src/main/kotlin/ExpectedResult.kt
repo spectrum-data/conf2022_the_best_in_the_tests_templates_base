@@ -153,6 +153,6 @@ data class ExpectedResult(
         /**
          * Регулярное выражение структуры описания теста
          * */
-        const val INPUT_STRUCTURE_REGEX = "^([\\s\\S]+?[^~=?]+)(==|~=|=\\?|~\\?)([^~=?]+[\\s\\S]+?)\$"
+        const val INPUT_STRUCTURE_REGEX = "^([\\s\\S]*?[^~=?]+)(==|~=|=\\?|~\\?)([^~=?]+[\\s\\S]*?)\$"
     }
 }
