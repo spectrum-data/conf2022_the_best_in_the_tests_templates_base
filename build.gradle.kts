@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
+    testImplementation ("io.kotest:kotest-runner-junit5:5.5.4")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 }
 
