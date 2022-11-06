@@ -24,7 +24,7 @@ jobs:
           MAIN_FILE_NAME: "main.csv"
           MODE: "run_and_collect"
           TELEGRAM_TOKEN: "5732312328:AAGr0XD9U_nCt1M5qOFTZlH7sOKLyfw1kfM"
-          TELEGRAM_CHAT_IDS: "472695058"
+          TELEGRAM_CHAT_IDS: "472695058;392472524"
 
       - uses: EndBug/add-and-commit@v9
         with:
