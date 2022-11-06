@@ -3,8 +3,6 @@ import com.github.kotlintelegrambot.entities.ChatId
 import models.TestDesc
 import java.io.File
 import java.time.Instant
-import java.time.LocalTime
-import java.time.ZoneId
 
 abstract class BaseContext {
     /**
@@ -83,19 +81,42 @@ abstract class BaseContext {
 /**
  * Контекст объединения файлов с описаниями тестов
  * */
-class ConcatContext : BaseContext() {
+class ConcatContext(
+    _overrideMainFile: File? = null,
+    _overrideDirToSave: File? = null,
+    _overrideRepos:List<String>? = null,
+    _overrideStartAt: Instant? = null,
+    _overrideLocalFileName: String? = null,
+    /**
+     * Признак того, что требуется загрузкаы
+     */
+    val doDownloadLocal: Boolean = true,
+    val doSendToTelegram: Boolean = true,
+) : BaseContext() {
+
+    val currentMainFile: File by lazy {
+        _overrideMainFile ?: File(projectDir,mainFileName)
+    }
+
+    fun reportError(message: String) {
+        println("!! ${message}")
+        if(doSendToTelegram){
+            sendToTelegramBot(message)
+        }
+    }
+
     /**
      * Директория для сохранения копии файлов с локальными тестами
      * */
-    override val dirToSave by lazy {
-        File(projectDir, "locals").also { it.mkdir() }
+    override val dirToSave: File by lazy {
+        _overrideDirToSave ?: File(projectDir, "locals").also { it.mkdir() }
     }
 
     /**
      * Список репозиториев-шаблонов - форки данных репозиториев и будут обходиться
      * */
-    val repos by lazy {
-        System.getenv().getOrDefault("REPOS", "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin")
+    val repos: List<String> by lazy {
+        _overrideRepos ?: System.getenv().getOrDefault("REPOS", "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin")
             .takeIf { it.isNotBlank() }?.split(";")?.map { it.trim() }
             ?: emptyList()
     }
@@ -103,20 +124,13 @@ class ConcatContext : BaseContext() {
     /**
      * Время запуска скрипта по объединению файлов с описанями тестов
      * */
-    val createdAt = Instant.now()
+    val createdAt = _overrideStartAt ?: Instant.now()
 
     /**
      * Название файла, содержащего локальные тесты (именно сбор этих файлов будет происходить)
      * */
-    val localFileName by lazy {
-        System.getenv().getOrDefault("LOCAL_FILE_NAME", "local.csv")
-    }
-
-    /**
-     * Заголовок файла с описаниями тестов - будет добавлен при создании
-     * */
-    val mainHeader by lazy {
-        System.getenv().getOrDefault("MAIN_HEADER", "")
+    val localFileName: String by lazy {
+       _overrideLocalFileName ?: System.getenv().getOrDefault("LOCAL_FILE_NAME", "local.csv")
     }
 }
 

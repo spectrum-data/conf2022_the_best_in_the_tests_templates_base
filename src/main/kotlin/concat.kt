@@ -1,28 +1,28 @@
-import com.github.kotlintelegrambot.entities.ChatId
 import models.TestDesc
 import models.TestDescParser
 import java.io.File
-import java.io.OutputStreamWriter
-import java.time.Instant
 
 /**
  * Запускает объединение файлов с описаниями тестов
  * */
-fun concat() {
-    val context = ConcatContext()
-    clearLocals(context)
-    val currentMainParseResult = TestDescParser.parse(File(context.projectDir, context.mainFileName))
-    if (!currentMainParseResult.isOk) {
-        context.sendToTelegramBot("Проблема при чтении локального main. ${currentMainParseResult.error}")
-    }
-    context.repos.forEach { repo ->
-        getForksInfo(repo, context.token).forEach { fork ->
-            try {
-                downloadLocal(fork, context)
-            } catch (t: Throwable) {
-                context.sendToTelegramBot("При попытке скачивания локальных файлов с репозитория ${fork.url} произошла ошибка. ${t.message} ${t.stackTrace}")
+fun concat(context: ConcatContext = ConcatContext()) {
+    if(context.doDownloadLocal) {
+        clearLocals(context)
+        context.repos.forEach { repo ->
+            getForksInfo(repo, context.token).forEach { fork ->
+                try {
+                    downloadLocal(fork, context)
+                } catch (t: Throwable) {
+                    context.reportError( "При попытке скачивания локальных файлов с репозитория ${fork.url} произошла ошибка. ${t.message} ${t.stackTrace}")
+                }
             }
         }
+    }
+
+    val currentMainParseResult = TestDescParser.parse(context.currentMainFile)
+    if (!currentMainParseResult.isOk) {
+        context.reportError("Проблема при чтении локального main, новый main не выпускается. ${currentMainParseResult.error}")
+        return // дальше нельзя собирать
     }
     val userTests = mutableListOf<TestDesc>()
     val dirs = context.dirToSave.listFiles().filter { it.isDirectory }
@@ -34,7 +34,7 @@ fun concat() {
         if (testParseResult.isOk) {
             userTests.addAll(testParseResult.data)
         } else {
-            context.sendToTelegramBot("При парсинге тестов ${author} произошла ошибка. ${testParseResult.error}")
+            context.reportError("При парсинге тестов ${author} произошла ошибка. ${testParseResult.error}")
         }
     }
 
@@ -53,14 +53,14 @@ fun concat() {
     resolvedTests.addAll(currentUserMap.values)
     writeNewMainFile(context, resolvedTests)
 
-    context.sendToTelegramBot("Обновленный файл с меткой времени ${context.createdAt} успешно сохранен!")
+    context.reportError("Обновленный файл с меткой времени ${context.createdAt} успешно сохранен!")
 }
 
 fun writeNewMainFile(context: ConcatContext, tests: List<TestDesc>) {
     val file = File(context.projectDir, context.mainFileName)
-    file.writer().use {w ->
+    file.writer().use { w ->
         w.appendLine(TestDesc.csvHeader)
-        tests.sortedWith(compareBy<TestDesc> {it.author}.thenBy{it.publishTime}).forEach {t ->
+        tests.sortedWith(compareBy<TestDesc> { it.author }.thenBy { it.publishTime }).forEach { t ->
             w.appendLine(t.toCsvString())
         }
     }
