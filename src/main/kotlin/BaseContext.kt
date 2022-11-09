@@ -32,7 +32,7 @@ abstract class BaseContext {
      * Идентификаторы чатов - куда отправлять сообщения об ошибке
      * */
     val telegramChatIds by lazy {
-        System.getenv().get("TELEGRAM_TOKEN")?.split(";")?.map { it.toLong() } ?: emptyList()
+        System.getenv().get("TELEGRAM_CHAT_IDS")?.split(";")?.map { it.toLong() } ?: emptyList()
     }
 
     /**
