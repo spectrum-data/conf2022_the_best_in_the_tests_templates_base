@@ -2,6 +2,11 @@ import com.github.kotlintelegrambot.bot
 import com.github.kotlintelegrambot.entities.ChatId
 import models.TestDesc
 import java.io.File
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpRequest.BodyPublisher
+import java.net.http.HttpResponse
 import java.time.Instant
 
 abstract class BaseContext {
@@ -17,16 +22,6 @@ abstract class BaseContext {
      * */
     val telegramToken by lazy {
         System.getenv().getOrDefault("TELEGRAM_TOKEN", "")
-    }
-
-    /**
-     * Экземпляр телеграм-бота
-     * */
-    val telegramBot by lazy {
-        bot {
-            timeout = 1
-            token = telegramToken
-        }
     }
 
     /**
@@ -68,13 +63,22 @@ abstract class BaseContext {
     fun sendToTelegramBot(message: String) {
         try {
             telegramChatIds.forEach { chatId ->
-                telegramBot.sendMessage(
-                    ChatId.fromId(chatId),
-                    message
-                )
-            }
+                val request = HttpRequest
+                    .newBuilder()
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString("{\"chat_id\": \"${chatId}\", \"text\": \"${message}\", \"disable_notification\": true}"))
+                    .uri(
+                        URI("https://api.telegram.org/bot$telegramToken/sendMessage")
+                    )
+                    .build()
 
-            telegramBot.stopPolling()
+                val response = HttpClient.newHttpClient()
+                    .send(
+                        request, HttpResponse.BodyHandlers.ofString()
+                    )
+
+                println("${response.body()}")
+            }
         } catch (t: Throwable) {
             println("При попытке отправки сообщения в телеграм бот - возникла ошибка. Сообщение $message")
         }
