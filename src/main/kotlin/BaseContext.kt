@@ -11,7 +11,7 @@ abstract class BaseContext {
      * Access_token для доступа к списку форков репозиториев
      * */
     val token by lazy {
-        System.getenv().getOrDefault("TOKEN", "")
+        "ghp_" + System.getenv().getOrDefault("TOKEN", "")
     }
 
     /**
