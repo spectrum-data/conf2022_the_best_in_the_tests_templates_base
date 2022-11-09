@@ -1,0 +1,3 @@
+author|input|expected|isDisabled|commentOnFailure|publishTime
+Lokbugs|a000aa 59|==GRZ-:А000АА59|false|НЕ ВАЛИДНЫЙ, Т.К. номер не может быть 000|2022-11-09T09:22:49.571437Z
+Lokbugs|0000 123456|=? PASSPORT_RF-:0000123456, DRIVER_LICENSE-:0000123456, STS-:0000123456, INN_UL-:0000123456|false|серия не может начинаться на 00|2022-11-09T09:22:49.571437Z
