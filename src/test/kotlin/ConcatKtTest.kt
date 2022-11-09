@@ -51,10 +51,10 @@ internal class ConcatKtTest : FunSpec() {
         fun createFirstLocalCommit() {
             ctx.dirToSave.also {
                 u1file.also { it.parentFile.mkdirs() }.writeText(
-                    "1 -> PASSPORT_RF:1 # comment 1\n"
+                    "1234567890 -> PASSPORT_RF:1234567890 # comment 1\n"
                 )
                 u2file.also { it.parentFile.mkdirs() }.writeText(
-                    "2 -> PASSPORT_RF:2 # comment 2\n"
+                    "9876543210 -> PASSPORT_RF:9876543210 # comment 2\n"
                 )
             }
         }
@@ -94,41 +94,41 @@ internal class ConcatKtTest : FunSpec() {
                 concat(ctx)
                 val main = TestDescParser.parse(ctx.currentMainFile).unwrap()
                 // и тут user1 добавляет еще один тест
-                u1file.appendText("3 -> INN_FL:3")
+                u1file.appendText("123456789012 -> INN_FL:123456789012")
                 concat(newCtx)
                 val updated = TestDescParser.parse(ctx.currentMainFile).unwrap()
                 // старые тесты не должны пропасть
                 updated.shouldContainAll(main)
                 // но второй тест это наш добавленный и время более позднее
                 updated[1].also {
-                    it.input shouldBe "3"
+                    it.input shouldBe "123456789012"
                     it.publishTime shouldBe newCtx.createdAt
                 }
             }
             test("тест удален") {
                 createFirstLocalCommit()
-                u1file.appendText("3 -> INN_FL:3")
+                u1file.appendText("123456789012 -> INN_FL:123456789012")
                 // итак было 2 теста
 
                 concat(ctx)
                 val main = TestDescParser.parse(ctx.currentMainFile).unwrap()
                 // и тут user1 по факту откатывает изменения и тест на 3 ушел
-                u1file.writeText("1 -> PASSPORT_RF:1 # comment 1\n")
+                u1file.writeText("1234567890 -> PASSPORT_RF:1234567890 # comment 1\n")
                 concat(newCtx)
                 val updated = TestDescParser.parse(ctx.currentMainFile).unwrap()
                 // старые тесты не должны пропасть
-                updated.single { it.input == "3" }.isDisabled.shouldBeTrue()
+                updated.single { it.input == "123456789012" }.isDisabled.shouldBeTrue()
             }
 
             test("тест удален а потом вернулся") {
                 createFirstLocalCommit()
-                u1file.appendText("3 -> INN_FL:3")
+                u1file.appendText("123456789012 -> INN_FL:123456789012")
                 concat(ctx)
                 // и тут user1 по факту откатывает изменения и тест на 3 ушел
-                u1file.writeText("1 -> PASSPORT_RF:1 # comment 1\n")
+                u1file.writeText("1234567890 -> PASSPORT_RF:1234567890 # comment 1\n")
                 concat(newCtx)
                 // и снова вернулся - должен сняться с disable
-                u1file.appendText("3 -> INN_FL:3")
+                u1file.appendText("123456789012 -> INN_FL:123456789012")
                 concat(newCtx)
                 val updated = TestDescParser.parse(ctx.currentMainFile).unwrap()
                 updated[1].isDisabled.shouldBeFalse()
@@ -137,7 +137,7 @@ internal class ConcatKtTest : FunSpec() {
             test("пользователь сам за дизаблил тест") {
                 createFirstLocalCommit()
                 concat(ctx)
-                u1file.writeText("!1 -> PASSPORT_RF:1 # comment 1\n")
+                u1file.writeText("!1234567890 -> PASSPORT_RF:1234567890 # comment 1\n")
                 concat(ctx)
                 val updated = TestDescParser.parse(ctx.currentMainFile).unwrap()
                 updated.shouldHaveSize(2) // новых тестов не должно было породиться
@@ -148,21 +148,21 @@ internal class ConcatKtTest : FunSpec() {
                 createFirstLocalCommit()
                 concat(ctx)
                 // и тут user1 меняет свой тест
-                u1file.writeText(u1file.readText().replace("1", "3"))
+                u1file.writeText(u1file.readText().replace("1234567890", "3334567890"))
                 concat(newCtx)
                 val updated = TestDescParser.parse(ctx.currentMainFile).unwrap()
                 // старые тесты не должны пропасть
                 updated[0].isDisabled.shouldBeTrue() // тест на 1 отключен
                 updated[1].also { // тройка добавлена как новый тест
-                    it.input shouldBe "3"
+                    it.input shouldBe "3334567890"
                     it.publishTime shouldBe newCtx.createdAt
                 }
             }
 
         }
 
-        context("ошибки"){
-            test("завал одной форки просто отключит его тесты"){
+        context("ошибки") {
+            test("завал одной форки просто отключит его тесты") {
                 createFirstLocalCommit()
                 concat(ctx) // слияние по идее пройдет успешно
                 u1file.writeText("не пойми чо\n")
@@ -172,11 +172,11 @@ internal class ConcatKtTest : FunSpec() {
                 updated[0].isDisabled.shouldBeTrue() // но у первого пользователя тесты времено
                 // будут отключены
             }
-            test("при каком-то грубом завале чтения main - он НЕ будет обновлен"){
+            test("при каком-то грубом завале чтения main - он НЕ будет обновлен") {
                 createFirstLocalCommit()
                 concat(ctx)
                 // порча
-                ctx.currentMainFile.writeText(ctx.currentMainFile.readText().replaceFirst("|","~"))
+                ctx.currentMainFile.writeText(ctx.currentMainFile.readText().replaceFirst("|", "~"))
                 val badFile = ctx.currentMainFile.readText()
                 // обновить пытаемся, но не получится
                 concat(ctx)

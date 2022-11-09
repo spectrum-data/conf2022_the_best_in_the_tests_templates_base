@@ -6,14 +6,14 @@ import java.io.File
  * Запускает объединение файлов с описаниями тестов
  * */
 fun concat(context: ConcatContext = ConcatContext()) {
-    if(context.doDownloadLocal) {
+    if (context.doDownloadLocal) {
         clearLocals(context)
         context.repos.forEach { repo ->
             getForksInfo(repo, context.token).forEach { fork ->
                 try {
                     downloadLocal(fork, context)
                 } catch (t: Throwable) {
-                    context.reportError( "При попытке скачивания локальных файлов с репозитория ${fork.url} произошла ошибка. ${t.message} ${t.stackTrace}")
+                    context.reportError("При попытке скачивания локальных файлов с репозитория ${fork.url} произошла ошибка. ${t.message} ${t.stackTrace}")
                 }
             }
         }

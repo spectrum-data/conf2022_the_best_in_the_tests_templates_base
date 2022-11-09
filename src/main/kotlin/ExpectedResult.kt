@@ -1,17 +1,6 @@
 import kotlinx.serialization.Serializable
 
 /**
- * Описание ожидаемого результата :
- *
- * вход:
- * Паспорт РФ 01 23 456789 == PASSPORT_RF:01234567890
- *
- * выход:
- * isExactly = true, isOrderRequired = true,
- * result = listOf(Document(PASSPORT_RF, "01234567890"))
- */
-
-/**
  * Описание ожидаемого результата парсинга входной строки
  * */
 @Serializable
@@ -36,42 +25,6 @@ data class ExpectedResult(
     val expected: List<ExtractedDocument> = emptyList()
 ) {
 
-    /**
-     * Проверяет набор документов на совпадение с ожидаемым результатом.
-     * */
-    fun match(actual: List<ExtractedDocument>): Boolean {
-        val doCountsEqual = actual.count() == expected.count()
-
-        return when {
-            isExactly && isOrderRequired -> {
-                doCountsEqual && actual.zip(expected).all { (a, b) -> a == b }
-            }
-
-            isExactly && !isOrderRequired -> {
-                doCountsEqual && actual.containsAll(expected)
-            }
-
-            /**
-             * Должно ли быть эквивалетно?
-             * Expected: PASSPORT_RF, INN_FL, INN_UL
-             * Actual: PASSPORT_RF, INN_UL
-             * */
-            !isExactly && isOrderRequired -> {
-                var subsequenceIndex = 0
-                val actualIterator = actual.iterator()
-
-                while (actualIterator.hasNext() && subsequenceIndex < expected.size) {
-                    if (actualIterator.next() == expected[subsequenceIndex]) subsequenceIndex += 1
-                }
-
-                return subsequenceIndex == expected.size
-            }
-
-            !isExactly && !isOrderRequired -> actual.containsAll(expected)
-            else -> error("Некорректной сконфигурирован ожидаемый результат: $this")
-        }
-    }
-
     companion object {
         /**
          * Разделитель при указании нескольких документов
@@ -80,11 +33,11 @@ data class ExpectedResult(
          * */
         const val EXPECTED_DOCUMENTS_SEPARATOR = ","
 
-        fun parse(input: String): ExpectedResult {
-            val splitByRegex = INPUT_STRUCTURE_REGEX.toRegex().matchEntire(input)
+        fun parse(fullStringToProcessed: String): ExpectedResult {
+            val splitByRegex = INPUT_STRUCTURE_REGEX.toRegex().matchEntire(fullStringToProcessed)
 
             check(splitByRegex != null && splitByRegex.groupValues.count() == 4) {
-                "Входная строка '$input' не соответствует структуре '$INPUT_STRUCTURE_REGEX'"
+                "Входная строка '$fullStringToProcessed' не соответствует структуре '$INPUT_STRUCTURE_REGEX'"
             }
 
             val filledConstraints = createAndFillConstraints(splitByRegex.groupValues[2])
@@ -97,22 +50,34 @@ data class ExpectedResult(
             return input.split(EXPECTED_DOCUMENTS_SEPARATOR).map { expectedDocDesc ->
                 expectedDocDesc.split(":")
                     .let {
-                        val value = it.getOrElse(1) { "" }.trim().replace(Regex("\\s"), "")
+                        val value = it.getOrElse(1) { "" }.trim()
 
-                        if (it[0].startsWith(INVALID_DOC_PREFIX)) {
+                        val trimmedFirstPart = it[0].trim()
+
+                        if (trimmedFirstPart.endsWith(VALID_DOC_SUFFIX)) {
                             ExtractedDocument(
-                                docType = DocType.valueOf(it[0].drop(1).uppercase().trim()),
+                                docType = DocType.valueOf(trimmedFirstPart.dropLast(1).uppercase()),
+                                isValid = true,
+                                isValidSetup = true,
+                                value = value,
+                            )
+                        } else if (trimmedFirstPart.endsWith(INVALID_DOC_SUFFIX)) {
+                            ExtractedDocument(
+                                docType = DocType.valueOf(trimmedFirstPart.dropLast(1).uppercase()),
                                 isValid = false,
-
+                                isValidSetup = true,
                                 value = value,
                             )
                         } else {
                             ExtractedDocument(
-                                docType = DocType.valueOf(it[0].uppercase().trim()),
-                                isValid = true,
-
+                                docType = DocType.valueOf(trimmedFirstPart.uppercase()),
+                                isValidSetup = false,
                                 value = value,
                             )
+                        }
+                    }.also {
+                        if (!it.isNormal()) {
+                            error("Указанный номер - '${it.value}' - не соответствует нормализованному формату ${it.docType.normaliseRegex} для ${it.docType}")
                         }
                     }
             }
@@ -146,13 +111,18 @@ data class ExpectedResult(
         }
 
         /**
-         * Префикс документа - номер документа не валиден
+         * Суфикс валидного документа документа - номер документа валиден
          * */
-        const val INVALID_DOC_PREFIX = "!"
+        const val VALID_DOC_SUFFIX = "+"
+
+        /**
+         * Суфикс не валидного документа документа - номер документа не валиден
+         * */
+        const val INVALID_DOC_SUFFIX = "-"
 
         /**
          * Регулярное выражение структуры описания теста
          * */
-        const val INPUT_STRUCTURE_REGEX = "^([\\s\\S]*?[^~=?]+)(==|~=|=\\?|~\\?)([^~=?]+[\\s\\S]*?)\$"
+        const val INPUT_STRUCTURE_REGEX = "^([\\s\\S]*?[^~=?]+)(==|~=|=\\?|~\\?)([^~=?]+[\\s\\S]+?)\$"
     }
 }
