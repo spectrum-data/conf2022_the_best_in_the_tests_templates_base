@@ -1,5 +1,6 @@
-author |number|stringToProcessed                                                         |isDisabled|commentOnFailure                                |publishTime
-Lokbugs|1     |паспортРФ==PASSPORT_RF                  |false     |Не удалось определить корректный паспорт РФ ФЛ  |
-Lokbugs|2     |Паспорт России==PASSPORT_RF               |false     |Не удалось определить некорректный паспорт РФ ФЛ|
-Lokbugs|3     |паспорт6517189923==PASSPORT_RF:6517189923                    |false     |Не удалось определить корректное ВУ             |
-Lokbugs|4     |passport RU 1234567890==PASSPORT_RF:1234567890|false     |Не удалось определить корректные паспорт РФ, ВУ |
+# SomeComment
+
+# не валидный грз
+a000aa 59 ->==GRZ-:А000АА59 # НЕ ВАЛИДНЫЙ, Т.К. номер не может быть 000
+
+0000 123456 ->=? PASSPORT_RF-:0000123456, DRIVER_LICENSE-:0000123456, STS-:0000123456, INN_UL-:0000123456 #серия не может начинаться на 00
