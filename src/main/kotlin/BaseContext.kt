@@ -1,11 +1,8 @@
-import com.github.kotlintelegrambot.bot
-import com.github.kotlintelegrambot.entities.ChatId
 import models.TestDesc
 import java.io.File
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
-import java.net.http.HttpRequest.BodyPublisher
 import java.net.http.HttpResponse
 import java.time.Instant
 

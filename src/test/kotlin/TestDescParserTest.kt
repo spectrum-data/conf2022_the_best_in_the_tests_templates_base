@@ -9,7 +9,7 @@ import java.time.Instant
 
 internal class TestDescParserTest : FunSpec() {
     init {
-        val time =  Instant.parse("2022-11-09T11:01:22.123567Z")
+        val time = Instant.parse("2022-11-09T11:01:22.123567Z")
         val test1 = TestDesc(
             "some_author",
             "1234567890",
@@ -21,7 +21,7 @@ internal class TestDescParserTest : FunSpec() {
         val test2 = TestDesc(
             "some_author",
             "6511111111",
-            "==INN_FL:1111111111",
+            "==INN_FL:123456789012",
             false,
             "some comment 2",
             time,
@@ -58,8 +58,8 @@ internal class TestDescParserTest : FunSpec() {
             }
         }
 
-        context("relax кейсы"){
-            test("разрешены пустые строки в перемешку с комментариями "){
+        context("relax кейсы") {
+            test("разрешены пустые строки в перемешку с комментариями ") {
                 val content = listOf(
                     "# а вот и наш main",
                     "",
@@ -68,7 +68,7 @@ internal class TestDescParserTest : FunSpec() {
                     "",
                     " # а вот и тесты нашего молодца",
                     test1.toCsvString(),
-                    "","",
+                    "", "",
                     test2.toCsvString(),
                     ""
                 ).joinToString("\n").also { println(it) }
@@ -78,7 +78,7 @@ internal class TestDescParserTest : FunSpec() {
                     it.data.shouldBe(listOf(test1, test2))
                 }
             }
-            test("в локальных тестах можно пропускать `==`"){
+            test("в локальных тестах можно пропускать `==`") {
                 val content = listOf(
                     "1111111111 -> PASSPORT_RF:1111111111",
                     "2222222222 -> ==PASSPORT_RF:2222222222",
@@ -93,29 +93,33 @@ internal class TestDescParserTest : FunSpec() {
             }
         }
 
-        context("ошибки"){
-            test("неведомый локальный формат"){
-                TestDescParser.parse("""
+        context("ошибки") {
+            test("неведомый локальный формат") {
+                TestDescParser.parse(
+                    """
                     я хочу == так писать тесты
-                """.trimIndent()).also {
+                """.trimIndent()
+                ).also {
                     it.isOk.shouldBeFalse()
                     it.error.shouldBe(TestDescParser.Error.CannotDetektFormat)
                 }
             }
-            test("неведомый полный формат, сбитый CSV"){
-                TestDescParser.parse(TestDesc.csvHeader.replace("author","shmauthor")).also {
+            test("неведомый полный формат, сбитый CSV") {
+                TestDescParser.parse(TestDesc.csvHeader.replace("author", "shmauthor")).also {
                     it.isOk.shouldBeFalse()
                     it.error.shouldBe(TestDescParser.Error.CannotDetektFormat)
                 }
             }
             test("завалена одна из строк") {
-                TestDescParser.parse(listOf(
-                    TestDesc.csvHeader,
-                    test1.toCsvString(),
-                    // вот тут полом
-                    test2.toCsvString().replaceFirst("|","~"),
-                    test1.copy(author = "y").toCsvString()
-                ).joinToString("\n")).also {
+                TestDescParser.parse(
+                    listOf(
+                        TestDesc.csvHeader,
+                        test1.toCsvString(),
+                        // вот тут полом
+                        test2.toCsvString().replaceFirst("|", "~"),
+                        test1.copy(author = "y").toCsvString()
+                    ).joinToString("\n")
+                ).also {
                     it.isOk.shouldBeFalse()
                     it.error.shouldBe(TestDescParser.Error.InvalidLineStruct(2))
                     // тем не менее что-то было прочитано
@@ -124,13 +128,15 @@ internal class TestDescParserTest : FunSpec() {
             }
 
             test("неправильное условие") {
-                TestDescParser.parse(listOf(
-                    TestDesc.csvHeader,
-                    test1.toCsvString(),
-                    // вот тут полом
-                    test2.copy(expected = "==труляля:1111").toCsvString(),
-                    test1.copy(author = "y").toCsvString()
-                ).joinToString("\n")).also {
+                TestDescParser.parse(
+                    listOf(
+                        TestDesc.csvHeader,
+                        test1.toCsvString(),
+                        // вот тут полом
+                        test2.copy(expected = "==труляля:1111").toCsvString(),
+                        test1.copy(author = "y").toCsvString()
+                    ).joinToString("\n")
+                ).also {
                     it.isOk.shouldBeFalse()
                     (it.error as TestDescParser.Error.InvalidExpectedSyntax).also {
                         it.line shouldBe 2
@@ -141,7 +147,7 @@ internal class TestDescParserTest : FunSpec() {
                 }
             }
 
-            test("задвоения запрещены"){
+            test("задвоения запрещены") {
                 val content = listOf(
                     TestDesc.csvHeader,
                     test1.toCsvString(),
