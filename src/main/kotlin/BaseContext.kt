@@ -24,6 +24,7 @@ abstract class BaseContext {
      * */
     val telegramBot by lazy {
         bot {
+            timeout = 1
             token = telegramToken
         }
     }
@@ -72,6 +73,8 @@ abstract class BaseContext {
                     message
                 )
             }
+
+            telegramBot.stopPolling()
         } catch (t: Throwable) {
             println("При попытке отправки сообщения в телеграм бот - возникла ошибка. Сообщение $message")
         }
@@ -84,7 +87,7 @@ abstract class BaseContext {
 class ConcatContext(
     _overrideMainFile: File? = null,
     _overrideDirToSave: File? = null,
-    _overrideRepos:List<String>? = null,
+    _overrideRepos: List<String>? = null,
     _overrideStartAt: Instant? = null,
     _overrideLocalFileName: String? = null,
     /**
@@ -95,12 +98,12 @@ class ConcatContext(
 ) : BaseContext() {
 
     val currentMainFile: File by lazy {
-        _overrideMainFile ?: File(projectDir,mainFileName)
+        _overrideMainFile ?: File(projectDir, mainFileName)
     }
 
     fun reportError(message: String) {
         println("!! ${message}")
-        if(doSendToTelegram){
+        if (doSendToTelegram) {
             sendToTelegramBot(message)
         }
     }
@@ -116,9 +119,10 @@ class ConcatContext(
      * Список репозиториев-шаблонов - форки данных репозиториев и будут обходиться
      * */
     val repos: List<String> by lazy {
-        _overrideRepos ?: System.getenv().getOrDefault("REPOS", "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin")
+        _overrideRepos ?: System.getenv()
+            .getOrDefault("REPOS", "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin")
             .takeIf { it.isNotBlank() }?.split(";")?.map { it.trim() }
-            ?: emptyList()
+        ?: emptyList()
     }
 
     /**
@@ -130,7 +134,7 @@ class ConcatContext(
      * Название файла, содержащего локальные тесты (именно сбор этих файлов будет происходить)
      * */
     val localFileName: String by lazy {
-       _overrideLocalFileName ?: System.getenv().getOrDefault("LOCAL_FILE_NAME", "local.csv")
+        _overrideLocalFileName ?: System.getenv().getOrDefault("LOCAL_FILE_NAME", "local.csv")
     }
 }
 
