@@ -1,5 +1,0 @@
-author|number|stringToProcessed|isDisabled|commentOnFailure|publishTime
-Lokbugs|1     |паспортРФ==PASSPORT_RF                  |false     |Не удалось определить корректный паспорт РФ ФЛ  |18:12:28.642595
-Lokbugs|2     |Паспорт России==PASSPORT_RF               |false     |Не удалось определить некорректный паспорт РФ ФЛ|18:12:28.642595
-Lokbugs|3     |паспорт6517189923==PASSPORT_RF:6517189923                    |false     |Не удалось определить корректное ВУ             |18:12:28.642595
-Lokbugs|4     |passport RU 1234567890==PASSPORT_RF:1234567890|false     |Не удалось определить корректные паспорт РФ, ВУ |18:12:28.642595
