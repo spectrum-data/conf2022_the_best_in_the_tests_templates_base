@@ -26,6 +26,7 @@ Shultzenfegel|9610 123321|~?PASSPORT_RF-,DRIVER_LICENSE-|false|код регио
 Shultzenfegel|9710 123321|~?PASSPORT_RF-,DRIVER_LICENSE-|false|код региона 97|2022-11-10T11:22:04.070443Z
 Shultzenfegel|9810 123321|~?PASSPORT_RF-,DRIVER_LICENSE-|false|код региона 98|2022-11-10T11:22:04.070443Z
 Shultzenfegel|9910 123321|~?PASSPORT_RF-,DRIVER_LICENSE-|false|код региона 99|2022-11-10T11:22:04.070443Z
+Shultzenfegel|серия 5010 номер 531432|~?PASSPORT_RF:5010531432,DRIVER_LICENSE:5010531432|false||2022-11-10T11:36:17.495383Z
 andreygubkin|6678098178|~?INN_UL+:6678098178|false|валидный ИНН ЮЛ|2022-11-10T10:40:03.481605Z
 andreygubkin|0023456784|~?INN_UL-:0023456784|false|невалидный ИНН ЮЛ, так как код налоговой начинается не с кода региона|2022-11-10T10:40:03.481605Z
 andreygubkin|0123456789|~?INN_UL-:0123456789|false|невалидный ИНН ЮЛ, так как контрольное число - неверное|2022-11-10T10:40:03.481605Z
