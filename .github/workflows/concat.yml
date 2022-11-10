@@ -19,7 +19,7 @@ jobs:
           ./gradlew run
         env:
           TOKEN: "hTeW2mknvNujIDf9Aje4hTI1QBdFXV3uByAQ"
-          REPOS: "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin"
+          REPOS: "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin;spectrum-data/conf2022_the_best_in_the_tests_templates_go"
           LOCAL_FILE_NAME: "local.csv"
           MAIN_FILE_NAME: "main.csv"
           MAIN_HEADER: "author|number|stringToProcessed|isDisabled|commentOnFailure|publishTime"
