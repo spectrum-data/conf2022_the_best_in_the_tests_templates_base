@@ -6,11 +6,9 @@ fun main(args: Array<String>) {
         System.getenv().getOrDefault("MODE", "")
     }
 
-    calculate()
-    /*
     when (mode.uppercase()) {
         "CONCAT" -> concat()
         "RUN_AND_COLLECT" -> runAndCollect()
         "CALCULATE" -> calculate()
-    }*/
+    }
 }
