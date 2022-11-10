@@ -11,19 +11,35 @@ fun runAndCollect() {
     val goForks = getForksInfo(baseRepo = context.goRepo, token = context.token)
 
     kotlinForks.forEach { kotlinFork ->
-        val projectDir = gitCloneToTemp(forkInfo = kotlinFork, token = context.token)
+        val projectDir = runCatching { gitCloneToTemp(forkInfo = kotlinFork, token = context.token) }
 
-        runTestsKotlin(projectDir)
+        if (projectDir.isFailure) {
+            context.sendToTelegramBot("Kotlin: Не удалось склонировать репозиторий участника ${kotlinFork.owner}")
+        } else {
+            val projectDirResult = projectDir.getOrThrow()
 
-        collectReport(kotlinFork, projectDir, context)
+            runCatching { runTestsKotlin(projectDirResult) }
+                .getOrElse { context.sendToTelegramBot("Kotlin: Не удалось выполнить тесты участника ${kotlinFork.owner}. Ошибка: ${it.message}") }
+
+            runCatching { collectReport(kotlinFork, projectDirResult, context) }
+                .getOrElse { context.sendToTelegramBot("Kotlin: Не собрать отчет о выполнении тестов участника ${kotlinFork.owner}. Ошибка: ${it.message}") }
+        }
     }
 
     goForks.forEach { goFork ->
-        val projectDir = gitCloneToTemp(forkInfo = goFork, token = context.token)
+        val projectDir = runCatching { gitCloneToTemp(forkInfo = goFork, token = context.token) }
 
-        runTestsGo(projectDir)
+        if (projectDir.isFailure) {
+            context.sendToTelegramBot("GO: Не удалось склонировать репозиторий участника ${goFork.owner}")
+        } else {
+            val projectDirResult = projectDir.getOrThrow()
 
-        collectReport(goFork, projectDir, context)
+            runCatching { runTestsGo(projectDirResult) }
+                .getOrElse { context.sendToTelegramBot("GO: Не удалось выполнить тесты участника ${goFork.owner}. Ошибка: ${it.message}") }
+
+            runCatching { collectReport(goFork, projectDirResult, context) }
+                .getOrElse { context.sendToTelegramBot("GO: Не собрать отчет о выполнении тестов участника ${goFork.owner}. Ошибка: ${it.message}") }
+        }
     }
 }
 
@@ -55,6 +71,8 @@ private fun collectReport(forkInfo: ForkInfo, projectDir: File, context: RunAndC
     File(projectDir, context.reportFileName).also {
         if (it.exists()) {
             it.copyTo(File(ownerDir, context.reportFileName), true)
+        } else {
+            error("Для форки Owner: ${forkInfo.owner} Url: ${forkInfo.url} не удалось получить файл с отчетом. Проверить выполнение тестов локально.")
         }
     }
 }
