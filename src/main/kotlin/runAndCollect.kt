@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 fun runAndCollect() {
     val context = RunAndCalculateContext()
 
-    val kotlinForks = emptyList<ForkInfo>()//getForksInfo(baseRepo = context.kotlinRepo, token = context.token)
+    val kotlinForks = getForksInfo(baseRepo = context.kotlinRepo, token = context.token)
     val goForks = getForksInfo(baseRepo = context.goRepo, token = context.token)
 
     kotlinForks.forEach { kotlinFork ->
