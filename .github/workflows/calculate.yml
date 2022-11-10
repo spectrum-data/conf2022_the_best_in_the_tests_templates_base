@@ -1,0 +1,32 @@
+name: calculate
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '>=1.18.0'
+
+      - name: Run tests and collect reports
+        run: |
+          ./gradlew run
+        env:
+          TOKEN: "hTeW2mknvNujIDf9Aje4hTI1QBdFXV3uByAQ"
+          KOTLIN_REPO: "spectrum-data/conf2022_the_best_in_the_tests_templates_kotlin"
+          GO_REPO: "spectrum-data/conf2022_the_best_in_the_tests_templates_go"
+          REPORT_FILE_NAME: "report.md"
+          MAIN_FILE_NAME: "main.csv"
+          MODE: "calculate"
+          START_AT: "2022-11-10T10:25:43.456891Z"
+          TELEGRAM_TOKEN: "5732312328:AAGr0XD9U_nCt1M5qOFTZlH7sOKLyfw1kfM"
+          TELEGRAM_CHAT_IDS: "472695058;392472524"
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: 'calculate result'

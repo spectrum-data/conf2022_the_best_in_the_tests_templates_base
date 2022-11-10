@@ -14,7 +14,7 @@ fun calculate() {
     val userResults = getUserResult(context)
 
     userResults.forEach { userResult ->
-        userResults.filter { it !== userResult }.forEach { otherUserResult ->
+        userResults.minus(userResult).forEach { otherUserResult ->
             userResult.fillShotInfo(context, otherUserResult)
         }
     }

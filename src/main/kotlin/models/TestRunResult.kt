@@ -45,17 +45,19 @@ data class TestRunResult(
          * */
         fun parseFromString(context: RunAndCalculateContext, lineFromReport: String): TestRunResult {
             return lineFromReport.trim('|').trim().let { line ->
-                line.split("|").map { it.trim() }.let { split ->
-                    TestRunResult(
-                        authorOfTest = split[0],
-                        input = split[1],
-                        expected = split[2],
-                        isTestPass = split[3].lowercase() == "true",
-                        testDesc = context.testDescs.first {
-                            it.author.lowercase() == split[0].lowercase() && "${it.input.trim()}${it.expected.trim()}" == "${split[1]}${split[2]}"
-                        }
-                    )
-                }
+                line.split("|")
+                    .map { it.trim() }
+                    .let { split ->
+                        TestRunResult(
+                            authorOfTest = split[0],
+                            input = split[1],
+                            expected = split[2],
+                            isTestPass = split[3].lowercase() == "true",
+                            testDesc = context.testDescs.first {
+                                it.author.lowercase() == split[0].lowercase() && "${it.input.trim()}${it.expected.trim()}" == "${split[1]}${split[2]}"
+                            }
+                        )
+                    }
             }
         }
     }

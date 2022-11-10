@@ -42,6 +42,7 @@ data class UserResult(
      * */
     val score by lazy {
         firedShots.filter { it.isSuccessful }.sumOf { it.getScore() }
+            .minus(receivedShots.filter { it.isSuccessful }.sumOf { it.getScore() })
     }
 
     /**
@@ -148,14 +149,14 @@ data class TestShot(
      * */
     fun getScore(): Double {
         return when {
-            timeToPublishMinutes <= 15 -> 1.2
-            timeToPublishMinutes <= 30 -> 1.1
-            timeToPublishMinutes <= 45 -> 1.0
-            timeToPublishMinutes <= 60 -> 0.9
-            timeToPublishMinutes <= 75 -> 0.6
-            timeToPublishMinutes <= 90 -> 0.4
-            timeToPublishMinutes <= 105 -> 0.2
-            timeToPublishMinutes <= 120 -> 0.1
+            timeToPublishMinutes <= 15 -> 2.0
+            timeToPublishMinutes <= 30 -> 1.8
+            timeToPublishMinutes <= 45 -> 1.6
+            timeToPublishMinutes <= 60 -> 1.4
+            timeToPublishMinutes <= 75 -> 1.0
+            timeToPublishMinutes <= 90 -> 0.6
+            timeToPublishMinutes <= 105 -> 0.4
+            timeToPublishMinutes <= 120 -> 0.2
             else -> 0.0
         }
     }
