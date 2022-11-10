@@ -5,9 +5,9 @@
 ##### So, 22 test(s) can get you points
 
 ##### Competitors:
-##### battle-toads: you passed  36/68
 ##### Shultzenfegel: you passed  21/39
 ##### andreygubkin: you passed  17/29
+##### battle-toads: you passed  36/68
 
 ##### FULL_INFO
 |author|input|expected|result|
@@ -42,74 +42,6 @@
 |comdiv|114 765 443 58|==SNILS-|false|
 |comdiv|046 860 694 91|==SNILS+|false|
 |comdiv|046 860 694 92|==SNILS-|false|
-|battle-toads|VIN X1W932700V0000657|==VIN+:X1W932700V0000657|false|
-|battle-toads|VIN 11111111111111111|==VIN-:11111111111111111|false|
-|battle-toads|ХW8ZZZ5NZMG023644 Lada Priora|==VIN+:XW8ZZZ5NZMG023644|false|
-|battle-toads|75 12 211133|~?PASSPORT_RF+:7512211133|true|
-|battle-toads|31 12 288813|~?PASSPORT_RF-:3112288813|true|
-|battle-toads|47 66 032123|~?PASSPORT_RF-:4766032123|true|
-|battle-toads|02 09 132123|~?PASSPORT_RF-:0209132123|true|
-|battle-toads|06 09 132123|~?PASSPORT_RF-:0609132123|true|
-|battle-toads|09 09 132123|~?PASSPORT_RF-:0909132123|true|
-|battle-toads|13 09 132123|~?PASSPORT_RF-:1309132123|true|
-|battle-toads|16 09 132123|~?PASSPORT_RF-:1609132123|true|
-|battle-toads|21 09 132123|~?PASSPORT_RF-:2109132123|true|
-|battle-toads|23 09 132123|~?PASSPORT_RF-:2309132123|true|
-|battle-toads|31 09 132123|~?PASSPORT_RF-:3109132123|true|
-|battle-toads|39 09 132123|~?PASSPORT_RF-:3909132123|true|
-|battle-toads|43 09 132123|~?PASSPORT_RF-:4309132123|true|
-|battle-toads|51 12 122123|~?PASSPORT_RF-:5112122123|true|
-|battle-toads|55 12 122123|~?PASSPORT_RF-:5512122123|true|
-|battle-toads|59 12 122123|~?PASSPORT_RF-:5912122123|true|
-|battle-toads|62 12 122123|~?PASSPORT_RF-:6212122123|true|
-|battle-toads|72 12 122123|~?PASSPORT_RF-:7212122123|true|
-|battle-toads|74 12 122123|~?PASSPORT_RF-:7412122123|true|
-|battle-toads|00 12 122123|~?PASSPORT_RF-:0012122123|true|
-|battle-toads|52 87 132123|~?PASSPORT_RF-:5287132123|true|
-|battle-toads|66 33 976366|~?DRIVER_LICENSE+:6633976366|true|
-|battle-toads|00 33 976366|~?DRIVER_LICENSE-:0033976366|false|
-|battle-toads|90 33 976366|~?DRIVER_LICENSE-:9033976366|false|
-|battle-toads|91 33 976366|~?DRIVER_LICENSE-:9133976366|false|
-|battle-toads|92 33 976366|~?DRIVER_LICENSE-:9233976366|false|
-|battle-toads|93 33 976366|~?DRIVER_LICENSE-:9333976366|false|
-|battle-toads|94 33 976366|~?DRIVER_LICENSE-:9433976366|false|
-|battle-toads|95 33 976366|~?DRIVER_LICENSE-:9533976366|false|
-|battle-toads|96 33 976366|~?DRIVER_LICENSE-:9633976366|false|
-|battle-toads|97 33 976366|~?DRIVER_LICENSE-:9733976366|false|
-|battle-toads|98 33 976366|~?DRIVER_LICENSE-:9833976366|false|
-|battle-toads|99 33 976366|~?DRIVER_LICENSE+:9933976366|true|
-|battle-toads|7o743---777!777|~?INN_UL+:7743777777|true|
-|battle-toads|7743жыывав777ывав773|~?INN_UL-:7743777773|true|
-|battle-toads|50!0,100732259|~?INN_FL+:500100732259|true|
-|battle-toads|65 O9 757573|~?PASSPORT_RF-:6509757573|false|
-|battle-toads|65 О9 757573|~?PASSPORT_RF-:6509757573|false|
-|battle-toads|66 33 97636O|~?DRIVER_LICENSE+:6633976366|false|
-|battle-toads|66 33 97636О|~?DRIVER_LICENSE+:6633976366|false|
-|battle-toads|001-001-990-98|== SNILS+:001-001-990-98|false|
-|battle-toads|001-001-991-11|== SNILS+:001-001-991-11|false|
-|battle-toads|001-001-992-22|== SNILS+:001-001-992-22|false|
-|battle-toads|001-001-993-22|== SNILS+:001-001-993-22|false|
-|battle-toads|001-001-994-33|== SNILS+:001-001-994-33|false|
-|battle-toads|001-001-995-33|== SNILS+:001-001-995-33|false|
-|battle-toads|001-001-997-22|== SNILS+:001-001-997-22|false|
-|battle-toads|001-001-998-22|== SNILS+:001-001-998-22|false|
-|battle-toads|112-233-445-95|== SNILS+:112-233-445-95|false|
-|battle-toads|112-233-445-45|== SNILS+:112-233-445-45|false|
-|battle-toads|О378ХН26|==GRZ+:О378ХН26|true|
-|battle-toads|В163ВС799|==GRZ+:В163ВС799|true|
-|battle-toads|К602ВМ097|==GRZ-:К602ВМ097|false|
-|battle-toads|у107ор102|==GRZ+:У107ОР102|false|
-|battle-toads|0033123350|~?INN_UL-:0033123350|false|
-|battle-toads|8834332216|~?INN_UL+:8834332216|true|
-|battle-toads|500100732255|~?INN_FL-:500100732255|true|
-|battle-toads|5080936111119|~?OGRN+:5080936111119|true|
-|battle-toads|50809___3612342_8|~?OGRN+:5080936123428|true|
-|battle-toads|50!!809___3612342_2|~?OGRN-:5080936123422|true|
-|battle-toads|53!!309,,3612342_5|~?OGRN-:5330936123425|false|
-|battle-toads|612741234567899|~?OGRNIP+:612741234567899|true|
-|battle-toads|61274!!!123456зы7892|~?OGRNIP-:612741234567892|true|
-|battle-toads|612741234557890|~?OGRNIP+:612741234557890|true|
-|battle-toads|612741234557893|~?OGRNIP+:612741234557893|false|
 |Shultzenfegel|1234 567890|~?PASSPORT_RF:1234567890,DRIVER_LICENSE:1234567890|true|
 |Shultzenfegel|паспорт или ВУ: 5050 909 012|~?PASSPORT_RF:5050909012,DRIVER_LICENSE:5050909012|true|
 |Shultzenfegel|5401 425555|~?PASSPORT_RF+|true|
@@ -178,3 +110,71 @@
 |andreygubkin|04480560348|~?SNILS+:044-805-603-48|false|
 |andreygubkin|044-805-603-48|~?SNILS+:044-805-603-48|false|
 |andreygubkin|04480560347|~?SNILS-:044-805-603-47|false|
+|battle-toads|VIN X1W932700V0000657|==VIN+:X1W932700V0000657|false|
+|battle-toads|VIN 11111111111111111|==VIN-:11111111111111111|false|
+|battle-toads|ХW8ZZZ5NZMG023644 Lada Priora|==VIN+:XW8ZZZ5NZMG023644|false|
+|battle-toads|75 12 211133|~?PASSPORT_RF+:7512211133|true|
+|battle-toads|31 12 288813|~?PASSPORT_RF-:3112288813|true|
+|battle-toads|47 66 032123|~?PASSPORT_RF-:4766032123|true|
+|battle-toads|02 09 132123|~?PASSPORT_RF-:0209132123|true|
+|battle-toads|06 09 132123|~?PASSPORT_RF-:0609132123|true|
+|battle-toads|09 09 132123|~?PASSPORT_RF-:0909132123|true|
+|battle-toads|13 09 132123|~?PASSPORT_RF-:1309132123|true|
+|battle-toads|16 09 132123|~?PASSPORT_RF-:1609132123|true|
+|battle-toads|21 09 132123|~?PASSPORT_RF-:2109132123|true|
+|battle-toads|23 09 132123|~?PASSPORT_RF-:2309132123|true|
+|battle-toads|31 09 132123|~?PASSPORT_RF-:3109132123|true|
+|battle-toads|39 09 132123|~?PASSPORT_RF-:3909132123|true|
+|battle-toads|43 09 132123|~?PASSPORT_RF-:4309132123|true|
+|battle-toads|51 12 122123|~?PASSPORT_RF-:5112122123|true|
+|battle-toads|55 12 122123|~?PASSPORT_RF-:5512122123|true|
+|battle-toads|59 12 122123|~?PASSPORT_RF-:5912122123|true|
+|battle-toads|62 12 122123|~?PASSPORT_RF-:6212122123|true|
+|battle-toads|72 12 122123|~?PASSPORT_RF-:7212122123|true|
+|battle-toads|74 12 122123|~?PASSPORT_RF-:7412122123|true|
+|battle-toads|00 12 122123|~?PASSPORT_RF-:0012122123|true|
+|battle-toads|52 87 132123|~?PASSPORT_RF-:5287132123|true|
+|battle-toads|66 33 976366|~?DRIVER_LICENSE+:6633976366|true|
+|battle-toads|00 33 976366|~?DRIVER_LICENSE-:0033976366|false|
+|battle-toads|90 33 976366|~?DRIVER_LICENSE-:9033976366|false|
+|battle-toads|91 33 976366|~?DRIVER_LICENSE-:9133976366|false|
+|battle-toads|92 33 976366|~?DRIVER_LICENSE-:9233976366|false|
+|battle-toads|93 33 976366|~?DRIVER_LICENSE-:9333976366|false|
+|battle-toads|94 33 976366|~?DRIVER_LICENSE-:9433976366|false|
+|battle-toads|95 33 976366|~?DRIVER_LICENSE-:9533976366|false|
+|battle-toads|96 33 976366|~?DRIVER_LICENSE-:9633976366|false|
+|battle-toads|97 33 976366|~?DRIVER_LICENSE-:9733976366|false|
+|battle-toads|98 33 976366|~?DRIVER_LICENSE-:9833976366|false|
+|battle-toads|99 33 976366|~?DRIVER_LICENSE+:9933976366|true|
+|battle-toads|7o743---777!777|~?INN_UL+:7743777777|true|
+|battle-toads|7743жыывав777ывав773|~?INN_UL-:7743777773|true|
+|battle-toads|50!0,100732259|~?INN_FL+:500100732259|true|
+|battle-toads|65 O9 757573|~?PASSPORT_RF-:6509757573|false|
+|battle-toads|65 О9 757573|~?PASSPORT_RF-:6509757573|false|
+|battle-toads|66 33 97636O|~?DRIVER_LICENSE+:6633976366|false|
+|battle-toads|66 33 97636О|~?DRIVER_LICENSE+:6633976366|false|
+|battle-toads|001-001-990-98|== SNILS+:001-001-990-98|false|
+|battle-toads|001-001-991-11|== SNILS+:001-001-991-11|false|
+|battle-toads|001-001-992-22|== SNILS+:001-001-992-22|false|
+|battle-toads|001-001-993-22|== SNILS+:001-001-993-22|false|
+|battle-toads|001-001-994-33|== SNILS+:001-001-994-33|false|
+|battle-toads|001-001-995-33|== SNILS+:001-001-995-33|false|
+|battle-toads|001-001-997-22|== SNILS+:001-001-997-22|false|
+|battle-toads|001-001-998-22|== SNILS+:001-001-998-22|false|
+|battle-toads|112-233-445-95|== SNILS+:112-233-445-95|false|
+|battle-toads|112-233-445-45|== SNILS+:112-233-445-45|false|
+|battle-toads|О378ХН26|==GRZ+:О378ХН26|true|
+|battle-toads|В163ВС799|==GRZ+:В163ВС799|true|
+|battle-toads|К602ВМ097|==GRZ-:К602ВМ097|false|
+|battle-toads|у107ор102|==GRZ+:У107ОР102|false|
+|battle-toads|0033123350|~?INN_UL-:0033123350|false|
+|battle-toads|8834332216|~?INN_UL+:8834332216|true|
+|battle-toads|500100732255|~?INN_FL-:500100732255|true|
+|battle-toads|5080936111119|~?OGRN+:5080936111119|true|
+|battle-toads|50809___3612342_8|~?OGRN+:5080936123428|true|
+|battle-toads|50!!809___3612342_2|~?OGRN-:5080936123422|true|
+|battle-toads|53!!309,,3612342_5|~?OGRN-:5330936123425|false|
+|battle-toads|612741234567899|~?OGRNIP+:612741234567899|true|
+|battle-toads|61274!!!123456зы7892|~?OGRNIP-:612741234567892|true|
+|battle-toads|612741234557890|~?OGRNIP+:612741234557890|true|
+|battle-toads|612741234557893|~?OGRNIP+:612741234557893|false|
