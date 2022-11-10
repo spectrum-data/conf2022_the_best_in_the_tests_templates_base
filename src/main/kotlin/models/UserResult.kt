@@ -50,17 +50,20 @@ data class UserResult(
      * */
     fun fillShotInfo(context: RunAndCalculateContext, otherUser: UserResult) {
         ownTests.filter { it.isTestPass }.forEach { ownTest ->
-            otherUser.competitorsTests.filter { it.authorOfTest.lowercase().trim() == login.lowercase().trim() }
-                .forEach { competitorTestRun ->
-                    firedShots.add(
-                        TestShot(
-                            from = login,
-                            to = otherUser.login,
-                            timeToPublishMinutes = ownTest.testDesc.getTestPublishMinutes(context),
-                            isSuccessful = !competitorTestRun.isTestPass,
-                        )
+            otherUser.competitorsTests.singleOrNull() {
+                it.authorOfTest.lowercase().trim() == login.lowercase().trim()  &&
+                        it.input.lowercase() == ownTest.input.lowercase() &&
+                        it.expected.lowercase() == ownTest.expected.lowercase()
+            }?.also {
+                firedShots.add(
+                    TestShot(
+                        from = login,
+                        to = otherUser.login,
+                        timeToPublishMinutes = ownTest.testDesc.getTestPublishMinutes(context),
+                        isSuccessful = !it.isTestPass,
                     )
-                }
+                )
+            }
         }
 
         competitorsTests
@@ -108,7 +111,7 @@ data class UserResult(
             }
 
             val testResults =
-                testResultLines.filter { it.isNotBlank() }.map { TestRunResult.parseFromString(context, it) }
+                testResultLines.filter { it.isNotBlank() }.mapNotNull { TestRunResult.parseFromString(context, it) }
 
             return UserResult(
                 login = login,

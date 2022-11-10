@@ -8,7 +8,7 @@ import java.time.LocalTime
 class CalculateTest : FunSpec() {
     init {
         context("парсинг") {
-            xtest("парсит корректные файлы") {
+            test("парсит корректные файлы") {
                 val context = object : RunAndCalculateContext() {
                     override val startAt: Instant = Instant.parse("2022-01-01T00:00:00.000Z")
 

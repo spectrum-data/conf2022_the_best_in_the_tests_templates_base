@@ -65,6 +65,7 @@ fun buildReport(context: RunAndCalculateContext, userResults: List<UserResult>) 
                         userResult.ownTests.count().toString(),
                         userResult.ownTests.count { it.isTestPass }.toString(),
                         userResult.firedShots.count { it.isSuccessful }.toString(),
+                        userResult.receivedShots.count{it.isSuccessful}.toString(),
                         userResult.score.toString(),
                         averageTestPublishTime.toString(),
                     ).joinToString("|")
@@ -77,8 +78,8 @@ fun buildReport(context: RunAndCalculateContext, userResults: List<UserResult>) 
     File(context.projectDir, "final_report.md")
         .also { it.createNewFile() }
         .writer().use { writer ->
-            writer.appendLine("|Участник|Прошел ли базовые тесты|Всего тестов|Активных|Выполнено своих тестов|Попадания|Балл|Ср. время на публикацию теста (мин)|")
-            writer.appendLine("|--------|--------|--------|--------|--------|--------|--------|--------|")
+            writer.appendLine("|Участник|Прошел ли базовые тесты|Всего тестов|Активных|Выполнено своих тестов|Попадания|Пропущенных|Балл|Ср. время от начала соревнований на публикацию теста (мин)|")
+            writer.appendLine("|--------|--------|--------|--------|--------|--------|--------|--------|--------|")
 
             userResults.sortedWith(compareBy<UserResult> { it.isPassBase }.thenByDescending { it.score })
                 .forEach { userResult ->

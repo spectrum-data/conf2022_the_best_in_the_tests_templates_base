@@ -179,7 +179,7 @@ open class RunAndCalculateContext : BaseContext() {
      * Время начала соревнований
      * */
     open val startAt: Instant by lazy {
-        System.getenv().getOrDefault("START_TIME", "").let { Instant.parse(it) }
+        System.getenv().getOrDefault("START_TIME", "2022-11-10T10:25:43.456891Z").let { Instant.parse(it) }
     }
 
     /**
