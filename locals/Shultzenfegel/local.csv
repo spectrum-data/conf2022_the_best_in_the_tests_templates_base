@@ -13,3 +13,13 @@
 5471 425555 -> ~?PASSPORT_RF- # неизвестный код подразделения - 7
 5481 425555 -> ~?PASSPORT_RF- # неизвестный код подразделения - 8
 5491 425555 -> ~?PASSPORT_RF- # неизвестный код подразделения - 9
+9210 123321 -> ~?PASSPORT_RF+,DRIVER_LICENSE+ # код региона севастополь (пруфы у вадима в скайпе)
+9510 123321 -> ~?PASSPORT_RF+,DRIVER_LICENSE+ # код региона чеченская республика (регионы проверял подставляя в линку регион на сайте гибдд)
+9010 123321 -> ~?PASSPORT_RF-,DRIVER_LICENSE- # код региона 90
+9110 123321 -> ~?PASSPORT_RF-,DRIVER_LICENSE- # код региона 91
+9310 123321 -> ~?PASSPORT_RF-,DRIVER_LICENSE- # код региона 93
+9410 123321 -> ~?PASSPORT_RF-,DRIVER_LICENSE- # код региона 94
+9610 123321 -> ~?PASSPORT_RF-,DRIVER_LICENSE- # код региона 96
+9710 123321 -> ~?PASSPORT_RF-,DRIVER_LICENSE- # код региона 97
+9810 123321 -> ~?PASSPORT_RF-,DRIVER_LICENSE- # код региона 98
+9910 123321 -> ~?PASSPORT_RF-,DRIVER_LICENSE- # код региона 99
