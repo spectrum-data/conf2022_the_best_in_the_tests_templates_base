@@ -2,6 +2,10 @@ enum class DocType(val normaliseRegex: Regex) {
     UNDEFINED("".toRegex()),
 
     /**
+     * Специальный тип, чтобы вернуть явно, что нет документов в переданной строке
+     */
+    NOT_FOUND("".toRegex()),
+    /**
      * Паспорт РФ
      * */
     PASSPORT_RF("^\\d{10}$".toRegex()),
